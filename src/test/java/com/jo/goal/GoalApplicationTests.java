@@ -1,10 +1,10 @@
-package com.ksa.cicd;
+package com.jo.goal;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class CicdApplicationTests {
+class GoalApplicationTests {
 
 	@Test
 	void contextLoads() {
