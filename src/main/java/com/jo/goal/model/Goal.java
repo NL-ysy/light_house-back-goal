@@ -18,12 +18,12 @@ public class Goal{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String title;
-    private String text;
+    private String goalTitle;
+    private String goalDesc;
     private Date startDay;
     private Date endDay;
-    private int weak_count;
-    private int total_count;
+    private int weekCount;
+    private int totalCount;
     private int count;
     private int doing;
     private int state;
