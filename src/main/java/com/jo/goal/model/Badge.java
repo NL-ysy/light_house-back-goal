@@ -21,6 +21,7 @@ public class Badge {
     private String badgeDesc;
     private String badgeImg;
     private int badgePoint;
+    private String type;
 
 
 }
