@@ -28,7 +28,21 @@ public class GoalServiceImpl implements GoalService{
     @Override
     public Goal editGoal(Goal goal) {
             log.info("edit goal. {}", goalRepository.findById(goal.getId()).get());
-            return goalRepository.save(goal);
+            Goal editedGoal = new Goal();
+            editedGoal = Goal.builder()
+                    .id(goal.getId())
+                    .goalTitle(goal.getGoalTitle())
+                    .goalDesc(goal.getGoalDesc())
+                    .startDay(goal.getStartDay())
+                    .endDay(goal.getEndDay())
+                    .weekCount(goal.getWeekCount())
+                    .count(goal.getCount())
+                    .totalCount(goal.getTotalCount())
+                    .doing(goal.getDoing())
+                    .state(goal.getState())
+                    .build();
+            goalRepository.save(goal);
+            return editedGoal;
     }
 
     @Transactional
