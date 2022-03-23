@@ -57,7 +57,7 @@ public class Badge {
 //        int exceptFirstWeekCount = goal.getTotalCount() - (7 - startDayNum); // 첫주 제외 실행일 수
         int totalWeek = (int)Math.ceil(goal.getTotalCount() / 7); // 목표 기간이 몇주인지
         int remainderDay = goal.getTotalCount() % 7; // 몇주인지 계산하고 남는 일자
-        int totalDate = totalWeek * goal.getWeekCount() + remainderDay; // 한 주에 실행할 획수 * week + 남은 일수
+        int totalDate = totalWeek * goal.getWeekCount() + remainderDay; // 한 주에 실행할 횟수 * week + 남은 일수
 
         if(totalDate / goal.getCount() == 1) {
             badgePoint = 15;

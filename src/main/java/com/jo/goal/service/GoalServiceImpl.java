@@ -32,9 +32,14 @@ public class GoalServiceImpl implements GoalService{
     public Goal editGoal(Goal goal) {
         log.info("edit goal. {}", goalRepository.findById(goal.getId()).get());
 
-        Goal EditedGoal = goalRepository.findById(goal.getId()).get(); // id에 해당하는 목표
+        if(goal.isEnd(goal.getEndDay()) == 0) { // 목표 진행 중일 때(종료일 당일까지)
+//            int count = goal.getDoing(); // 일일 목표 실행하면 1
+//            int prevCount = goal.getCount();
+//            goal.setCount(prevCount + count);
+//            goal.setDoing(0);
 
-        if(goal != null && goal.getState() == 1) { // 목표가 존재하고 해당 목표가 완료 상태일 때
+        } else if(goal.isEnd(goal.getEndDay()) == 1) { // 목표 종료일이 지났을 때
+
             Badge badge = new Badge();
             int endPoint = badge.endDayPoint(goal); // 목표 기간에 따른 포인트
             int completePoint = badge.completePoint(goal); // 목표 성공율에 따른 포인트
@@ -49,10 +54,10 @@ public class GoalServiceImpl implements GoalService{
             badge.setBadgePoint(endPoint + completePoint);
             badgeService.addBadge(badge);
 
-            return goalRepository.save(goal);
-        } else {
-            return null;
         }
+
+        return goalRepository.save(goal);
+
     }
 
     @Transactional
