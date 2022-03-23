@@ -22,6 +22,7 @@ public class Badge {
     private String badgeImg;
     private int badgePoint = 0;
 
+
     @Builder
     public Badge(String badgeName, String badgeDesc, String badgeImg, int badgePoint) {
         this.badgeName = badgeName;

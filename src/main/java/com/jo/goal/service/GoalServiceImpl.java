@@ -34,8 +34,13 @@ public class GoalServiceImpl implements GoalService{
     @Transactional
     @Override
     public List<Goal> getAllGoal() {
+<<<<<<< HEAD
         log.info("get all goal");
         return goalRepository.findAll();
+=======
+            log.info("get all goal!!!!!!!!!!!!!");
+            return goalRepository.findAll();
+>>>>>>> 27ab654b56ddfc87627ca90cd2bd622e879f651d
     }
 
     @Transactional
