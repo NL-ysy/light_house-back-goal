@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface BadgeService {
 
-    Badge addBadge(Badge badge, Long goalId);
+    Badge addBadge(Badge badge);
     Badge editBadge(Badge badge);
     List<Badge> getAllBadge();
     Optional<Badge> getBadgeById(Long id);

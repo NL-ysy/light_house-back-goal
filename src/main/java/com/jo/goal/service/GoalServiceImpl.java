@@ -1,5 +1,6 @@
 package com.jo.goal.service;
 
+import com.jo.goal.model.Badge;
 import com.jo.goal.model.Goal;
 import com.jo.goal.repository.GoalRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,13 @@ import java.util.Optional;
 public class GoalServiceImpl implements GoalService{
 
     private final GoalRepository goalRepository;
+    private final BadgeService badgeService;
 
     @Transactional
     @Override
     public Goal addGoal(Goal goal) {
         log.info("add goal");
+
         return goalRepository.save(goal);
     }
 
@@ -28,19 +31,35 @@ public class GoalServiceImpl implements GoalService{
     @Override
     public Goal editGoal(Goal goal) {
         log.info("edit goal. {}", goalRepository.findById(goal.getId()).get());
-        return goalRepository.save(goal);
+
+        Goal EditedGoal = goalRepository.findById(goal.getId()).get(); // id에 해당하는 목표
+
+        if(goal != null && goal.getState() == 1) { // 목표가 존재하고 해당 목표가 완료 상태일 때
+            Badge badge = new Badge();
+            int endPoint = badge.endDayPoint(goal); // 목표 기간에 따른 포인트
+            int completePoint = badge.completePoint(goal); // 목표 성공율에 따른 포인트
+
+            if(goal.getId() == 1L && completePoint > 0) { // 처음 생성한 목표를 성공했을 때 부여되는 기념 배지
+                badgeService.addBadge(Badge.builder()
+                        .badgeName("Second Badge")
+                        .badgeDesc("Complete First Goal")
+                        .build());
+            }
+
+            badge.setBadgePoint(endPoint + completePoint);
+            badgeService.addBadge(badge);
+
+            return goalRepository.save(goal);
+        } else {
+            return null;
+        }
     }
 
     @Transactional
     @Override
     public List<Goal> getAllGoal() {
-<<<<<<< HEAD
         log.info("get all goal");
         return goalRepository.findAll();
-=======
-            log.info("get all goal!!!!!!!!!!!!!");
-            return goalRepository.findAll();
->>>>>>> 27ab654b56ddfc87627ca90cd2bd622e879f651d
     }
 
     @Transactional

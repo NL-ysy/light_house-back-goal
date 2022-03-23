@@ -16,7 +16,7 @@ public class BadgeController {
     private final BadgeService badgeService;
 
     @PostMapping("/badge")
-    public void add(@RequestBody Badge badge, @RequestParam(value = "goalId", required = false) Long goalId){badgeService.addBadge(badge, goalId);}
+    public void add(@RequestBody Badge badge){badgeService.addBadge(badge);}
 
     @PutMapping("/badge")
     public void edit(@RequestBody Badge badge){badgeService.editBadge(badge);}
