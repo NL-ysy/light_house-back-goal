@@ -20,22 +20,22 @@ public class GoalServiceImpl implements GoalService{
     @Transactional
     @Override
     public Goal addGoal(Goal goal) {
-            log.info("add goal");
-            return goalRepository.save(goal);
-        }
+        log.info("add goal");
+        return goalRepository.save(goal);
+    }
 
     @Transactional
     @Override
     public Goal editGoal(Goal goal) {
-            log.info("edit goal. {}", goalRepository.findById(goal.getId()).get());
-            return goalRepository.save(goal);
+        log.info("edit goal. {}", goalRepository.findById(goal.getId()).get());
+        return goalRepository.save(goal);
     }
 
     @Transactional
     @Override
     public List<Goal> getAllGoal() {
-            log.info("get all goal");
-            return goalRepository.findAll();
+        log.info("get all goal");
+        return goalRepository.findAll();
     }
 
     @Transactional
@@ -48,7 +48,7 @@ public class GoalServiceImpl implements GoalService{
     @Transactional
     @Override
     public void delGoal(Long id) {
-            log.info("del goal by id {}.", id);
-            goalRepository.deleteById(id);
+        log.info("del goal by id {}.", id);
+        goalRepository.deleteById(id);
     }
 }
