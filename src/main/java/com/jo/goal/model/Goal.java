@@ -27,16 +27,4 @@ public class Goal{
     private int doing = 0;
     private int state = 0;
 
-    public int isEnd(LocalDate endDay) {
-        LocalDate today = LocalDate.now();
-        state = 0;
-
-        if(endDay.isAfter(today) || endDay.isEqual(today)) {
-            state = 0;
-        } else if(endDay.isBefore(today)) {
-            state = 1;
-        }
-        return state;
-    }
-
 }
