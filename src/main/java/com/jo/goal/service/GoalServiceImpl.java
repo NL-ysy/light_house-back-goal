@@ -69,6 +69,29 @@ public class GoalServiceImpl implements GoalService{
         goalRepository.deleteById(id);
     }
 
+    public Badge isComplete(Goal goal) { // 목표 달성 여부 파악하고 실행율에 따른 배지 및 포인트 생성
+        int totalWeek = (int)Math.ceil(goal.getTotalCount() / 7); // 목표 기간이 몇주인지
+        int remainderDay = goal.getTotalCount() % 7; // 몇주인지 계산하고 남는 일자
+        int totalDate = totalWeek * goal.getWeekCount() + remainderDay; // 한 주에 실행할 횟수 * week + 남은 일수
+
+        Badge badge = null;
+
+        if(totalDate / goal.getCount() == 1) {
+            badge = new Badge();
+            badge.setBadgePoint(15);
+        } else if(totalDate / goal.getCount() >= 0.9) {
+            badge = new Badge();
+            badge.setBadgePoint(10);
+        } else if(totalDate / goal.getCount() >= 0.8) {
+            badge = new Badge();
+            badge.setBadgePoint(5);
+        } else {
+            log.error("fail");
+        }
+
+        return badge;
+    }
+
     @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() {
         List<Goal> list = goalRepository.findAll();
@@ -77,29 +100,26 @@ public class GoalServiceImpl implements GoalService{
             goal.setDoing(0); // goal의 doing 상태를 0으로 전환
             if(goal.getEndDay().isBefore(today)) {
                 goal.setState(1); //endDay 확인하고 state 변경
-
-                // 목표 달성 여부 파악
-                // 목표 달성을 성공했을 때 배지 생성
-                Badge badge = new Badge();
-                int endPoint = badge.endDayPoint(goal); // 목표 기간에 따른 포인트
-                int completePoint = badge.completePoint(goal); // 목표 성공율에 따른 포인트
-
-                if(goal.getId() == 1L && completePoint > 0) { // 처음 생성한 목표를 성공했을 때 부여되는 기념 배지
-                    badgeService.addBadge(Badge.builder()
-                            .badgeName("Second Badge")
-                            .badgeDesc("Complete First Goal")
-                            .build());
+                
+                Badge badge = isComplete(goal); // 목표를 달성했을 때 배지 생성
+                if(badge != null) {
+                    int point = badge.endDayPoint(goal);
+                    badge.setBadgePoint(point);
+                    if(goal.getId() == 1L) { // 처음 생성한 목표를 성공했을 때 주는 기념 배지
+                        badgeService.addBadge(Badge.builder()
+                                .badgeName("Second Badge")
+                                .badgeDesc("Complete First Goal")
+                                .build());
+                    }
+                    badgeService.addBadge(badge);
                 }
-
-                badge.setBadgePoint(endPoint + completePoint);
-                badgeService.addBadge(badge);
             }
         });
     }
 
-    @Scheduled(cron = "30 * * * * *")
-    public void testScheduler() {
-        System.out.println("test");
-    }
+//    @Scheduled(cron = "30 * * * * *")
+//    public void testScheduler() {
+//        System.out.println("test");
+//    }
 
 }
