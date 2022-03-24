@@ -26,16 +26,23 @@ public class GoalServiceImpl implements GoalService{
     @Override
     public Goal addGoal(Goal goal) {
         log.info("add goal");
-
+        List<Goal> list = goalRepository.findAll();
+        if(list.size() == 0) { // 첫 목표 생성 기념 배지
+            Badge.builder()
+                    .badgeName("First Badge")
+                    .badgeDesc("Set Goal")
+                    .build();
+        }
         return goalRepository.save(goal);
     }
 
     @Transactional
     @Override
-    public Goal editGoal(GoalDto goalDto) {
+    public int editGoal(GoalDto goalDto) {
 //        log.info("edit goal. {}", goalRepository.findById(goal.getId()).get());
 
         Goal goal = goalRepository.findById(goalDto.getId()).get();
+        int todayCount = goal.getCount();
 
         if(goal != null && goal.getState() == 0) { // 목표 진행 중일 때
             int count = goalDto.getDoing(); // 일일 목표 실행하면 1
@@ -45,7 +52,7 @@ public class GoalServiceImpl implements GoalService{
             log.error("complete goal : {}", goal.getId());
         }
 
-        return goalRepository.save(goal);
+        return todayCount;
     }
 
     @Transactional

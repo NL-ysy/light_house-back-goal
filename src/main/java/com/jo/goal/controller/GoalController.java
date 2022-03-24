@@ -21,7 +21,10 @@ public class GoalController {
     public void add(@RequestBody Goal goal) {goalService.addGoal(goal);}
 
     @PutMapping("/goal/{id}")
-    public void edit(@RequestBody GoalDto goal, @PathVariable Long id) {goalService.editGoal(goal);}
+    public int edit(@RequestBody GoalDto goal, @PathVariable Long id) {
+        int count = goalService.editGoal(goal);
+        return count;
+    }
 
     @GetMapping("/goal")
     public List<Goal> getAll(){return goalService.getAllGoal();}
