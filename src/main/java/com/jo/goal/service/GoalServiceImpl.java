@@ -78,6 +78,12 @@ public class GoalServiceImpl implements GoalService{
         goalRepository.deleteById(id);
     }
 
+    @Override
+    public List<Goal> get3DoingGoal(int state) {
+        log.info("대시보드에 보여줄 최근 진행중인 목표 3개");
+        return goalRepository.findTop3ByStateOrderByIdDesc(state);
+    }
+
     public Badge isComplete(Goal goal) { // 목표 달성 여부 파악하고 실행율에 따른 배지 및 포인트 생성
         int totalWeek = (int)Math.ceil(goal.getTotalCount() / 7); // 목표 기간이 몇주인지
         int remainderDay = goal.getTotalCount() % 7; // 몇주인지 계산하고 남는 일자
@@ -105,35 +111,36 @@ public class GoalServiceImpl implements GoalService{
         return badge;
     }
 
-    int weekCheck= 0; // 일주일 기간 check
-    int weekCheckCount = 0; // 한 주에 실천한 count check
+//    int weekCheck= 0; // 일주일 기간 check
+//    int weekCheckCount = 0; // 한 주에 실천한 count check
 //    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
-    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
+//    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
+    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
     public void scheduler() { // 목표 doing 초기화, 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
 
         list.forEach(goal -> {
-//            goal.setDoing(0); // goal의 doing 상태를 0으로 전환
+            goal.setDoing(0); // goal의 doing 상태를 0으로 전환
 
             // 일주일에 실행한 목표 실천 횟수 판별
-            weekCheck++; // 매일 count
-            log.info("weekCheck : {}", weekCheck);
-            if(goal.getDoing() == 1) weekCheckCount++; // 해당일에 목표를 실천했을 때 count
-            if(weekCheckCount < goal.getWeekCount()) {
-                log.info("weekCheckCount : {}", weekCheckCount);
-                goal.setDoing(0);
-                goalRepository.save(goal);
-            } else {
-                goal.setDoing(1);
-            }
-            if(weekCheck == 7) {
-                log.info("7");
-                weekCheck = 0;
-                weekCheckCount = 0;
-                goal.setDoing(0);
-                goalRepository.save(goal);
-            }
+//            weekCheck++; // 매일 count
+//            log.info("weekCheck : {}", weekCheck);
+//            if(goal.getDoing() == 1) weekCheckCount++; // 해당일에 목표를 실천했을 때 count
+//            if(weekCheckCount < goal.getWeekCount()) {
+//                log.info("weekCheckCount : {}", weekCheckCount);
+//                goal.setDoing(0);
+//                goalRepository.save(goal);
+//            } else {
+//                goal.setDoing(1);
+//            }
+//            if(weekCheck == 7) {
+//                log.info("7");
+//                weekCheck = 0;
+//                weekCheckCount = 0;
+//                goal.setDoing(0);
+//                goalRepository.save(goal);
+//            }
 
             // 목표 종료일 판별
             if(goal.getEndDay().isBefore(today)) {
