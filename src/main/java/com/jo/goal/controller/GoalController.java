@@ -30,4 +30,9 @@ public class GoalController {
 
     @DeleteMapping("/goal/{id}")
     public void del(@PathVariable("id") Long id) {goalService.delGoal(id);}
+
+    @GetMapping("/dGoal/{state}")
+    public List<Goal> get3dGoals(@PathVariable int state) {
+        return goalService.get3DoingGoal(state);
+    }
 }

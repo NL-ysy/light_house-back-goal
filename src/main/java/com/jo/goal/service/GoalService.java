@@ -12,5 +12,5 @@ public interface GoalService {
     List<Goal> getAllGoal();
     Optional<Goal> getGoalById(Long id);
     void delGoal(Long id);
-
+    List<Goal> get3DoingGoal(int state);
 }

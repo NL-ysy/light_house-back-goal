@@ -65,4 +65,10 @@ public class GoalServiceImpl implements GoalService{
             log.info("del goal by id {}.", id);
             goalRepository.deleteById(id);
     }
+
+    @Override
+    public List<Goal> get3DoingGoal(int state) {
+        log.info("대시보드에 보여줄 최근 진행중인 목표 3개");
+        return goalRepository.findTop3ByStateOrderByIdDesc(state);
+    }
 }
