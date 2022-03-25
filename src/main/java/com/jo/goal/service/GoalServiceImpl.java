@@ -116,6 +116,7 @@ public class GoalServiceImpl implements GoalService{
         list.forEach(goal -> {
 //            goal.setDoing(0); // goal의 doing 상태를 0으로 전환
 
+            // 일주일에 실행한 목표 실천 횟수 판별
             weekCheck++; // 매일 count
             log.info("weekCheck : {}", weekCheck);
             if(goal.getDoing() == 1) weekCheckCount++; // 해당일에 목표를 실천했을 때 count
@@ -134,6 +135,7 @@ public class GoalServiceImpl implements GoalService{
                 goalRepository.save(goal);
             }
 
+            // 목표 종료일 판별
             if(goal.getEndDay().isBefore(today)) {
                 if(goal.getState() == 1) {
                     return;
