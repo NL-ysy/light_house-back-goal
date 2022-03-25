@@ -114,25 +114,33 @@ public class GoalServiceImpl implements GoalService{
             goal.setDoing(0); // goal의 doing 상태를 0으로 전환
 
             if(goal.getEndDay().isBefore(today)) {
-                goal.setState(1); //endDay 확인하고 state 변경
-
-                Badge badge = isComplete(goal); // 목표를 달성했을 때 배지 생성
-                if(badge != null) {
-                    log.info("get badge");
-                    int point = badge.endDayPoint(goal);
-                    badge.setBadgePoint(badge.getBadgePoint() + point);
-//                    if(goal.getId() == 1L) { // 처음 생성한 목표를 성공했을 때 주는 기념 배지
-//                        badgeService.addBadge(Badge.builder()
-//                                .badgeName("Second Badge")
-//                                .badgeDesc("Complete First Goal")
-//                                .build());
-//                    }
-                    badgeService.addBadge(badge);
+                if(goal.getState() == 1) {
+                    return;
                 } else {
-                    log.error("fail : {}", goal.getId());
+                    goal.setState(1); //endDay 확인하고 state 변경
+
+                    Badge badge = isComplete(goal); // 목표를 달성했을 때 배지 생성
+                    if(badge != null) {
+                        log.info("get badge");
+                        int point = badge.endDayPoint(goal);
+                        badge.setBadgePoint(badge.getBadgePoint() + point);
+                        if(goal.getId() == 1L) { // 처음 생성한 목표를 성공했을 때 주는 기념 배지
+                            List<Badge> badgeList = badgeService.getAllBadge();
+                            if(!badgeList.contains("Second Badge")) { // 기념 배지가 없으면 배지 증정
+                                badgeService.addBadge(Badge.builder()
+                                        .badgeName("Second Badge")
+                                        .badgeDesc("Complete First Goal")
+                                        .build());
+                            }
+                        }
+                        badgeService.addBadge(badge);
+                    } else {
+                        log.error("fail : {}", goal.getId());
+                    }
                 }
+
+                goalRepository.save(goal);
             }
-            goalRepository.save(goal);
         });
     }
 
