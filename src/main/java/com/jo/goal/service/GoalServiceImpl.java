@@ -169,7 +169,7 @@ public class GoalServiceImpl implements GoalService{
                     }
                 }
 
-//                goalRepository.save(goal);
+                goalRepository.save(goal);
             }
         });
     }
