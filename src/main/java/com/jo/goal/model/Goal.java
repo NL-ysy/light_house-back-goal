@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDate;
 
+@Builder
 @Data
 @NoArgsConstructor
 @Entity
