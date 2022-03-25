@@ -33,6 +33,7 @@ public class GoalServiceImpl implements GoalService{
                         .badgeDesc("Set Goal")
                         .build());
         }
+        
         return goalRepository.save(goal);
     }
 
@@ -44,7 +45,7 @@ public class GoalServiceImpl implements GoalService{
         Goal goal = goalRepository.findById(goalDto.getId()).get();
         int todayCount = goal.getCount();
 
-        if(goal != null && goal.getState() == 0) { // 목표 진행 중일 때
+        if(goal != null && goal.getState() == 0 && goal.getDoing() == 0) { // 목표 진행 중일 때
             int count = goalDto.getDoing(); // 일일 목표 실행하면 1
             int prevCount = goal.getCount();
             goal.setCount(prevCount + count);
@@ -104,14 +105,34 @@ public class GoalServiceImpl implements GoalService{
         return badge;
     }
 
+    int weekCheck= 0; // 일주일 기간 check
+    int weekCheckCount = 0; // 한 주에 실천한 count check
 //    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
-    @Scheduled(cron = "30 * * * * *") // 매분 30초에 실행
-    public void scheduler() {
+    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
+    public void scheduler() { // 목표 doing 초기화, 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
 
         list.forEach(goal -> {
-            goal.setDoing(0); // goal의 doing 상태를 0으로 전환
+//            goal.setDoing(0); // goal의 doing 상태를 0으로 전환
+
+            weekCheck++; // 매일 count
+            log.info("weekCheck : {}", weekCheck);
+            if(goal.getDoing() == 1) weekCheckCount++; // 해당일에 목표를 실천했을 때 count
+            if(weekCheckCount < goal.getWeekCount()) {
+                log.info("weekCheckCount : {}", weekCheckCount);
+                goal.setDoing(0);
+                goalRepository.save(goal);
+            } else {
+                goal.setDoing(1);
+            }
+            if(weekCheck == 7) {
+                log.info("7");
+                weekCheck = 0;
+                weekCheckCount = 0;
+                goal.setDoing(0);
+                goalRepository.save(goal);
+            }
 
             if(goal.getEndDay().isBefore(today)) {
                 if(goal.getState() == 1) {
@@ -139,12 +160,12 @@ public class GoalServiceImpl implements GoalService{
                     }
                 }
 
-                goalRepository.save(goal);
+//                goalRepository.save(goal);
             }
         });
     }
 
-//    @Scheduled(cron = "30 * * * * *")
+//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
 //    public void testScheduler() {
 //        System.out.println("test");
 //    }
