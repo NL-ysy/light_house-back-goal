@@ -28,10 +28,10 @@ public class GoalServiceImpl implements GoalService{
         log.info("add goal");
         List<Goal> list = goalRepository.findAll();
         if(list.size() == 0) { // 첫 목표 생성 기념 배지
-            Badge.builder()
-                    .badgeName("First Badge")
-                    .badgeDesc("Set Goal")
-                    .build();
+            badgeService.addBadge(Badge.builder()
+                        .badgeName("First Badge")
+                        .badgeDesc("Set Goal")
+                        .build());
         }
         return goalRepository.save(goal);
     }
@@ -48,6 +48,7 @@ public class GoalServiceImpl implements GoalService{
             int count = goalDto.getDoing(); // 일일 목표 실행하면 1
             int prevCount = goal.getCount();
             goal.setCount(prevCount + count);
+            goal.setDoing(1);
         } else {
             log.error("complete goal : {}", goal.getId());
         }
@@ -84,43 +85,54 @@ public class GoalServiceImpl implements GoalService{
         Badge badge = null;
 
         if(totalDate / goal.getCount() == 1) {
+            log.info("100");
             badge = new Badge();
             badge.setBadgePoint(15);
         } else if(totalDate / goal.getCount() >= 0.9) {
+            log.info("90");
             badge = new Badge();
             badge.setBadgePoint(10);
         } else if(totalDate / goal.getCount() >= 0.8) {
+            log.info("80");
             badge = new Badge();
             badge.setBadgePoint(5);
         } else {
             log.error("fail");
+            return null;
         }
 
         return badge;
     }
 
-    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+    @Scheduled(cron = "30 * * * * *") // 매분 30초에 실행
     public void scheduler() {
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
+
         list.forEach(goal -> {
             goal.setDoing(0); // goal의 doing 상태를 0으로 전환
+
             if(goal.getEndDay().isBefore(today)) {
                 goal.setState(1); //endDay 확인하고 state 변경
-                
+
                 Badge badge = isComplete(goal); // 목표를 달성했을 때 배지 생성
                 if(badge != null) {
+                    log.info("get badge");
                     int point = badge.endDayPoint(goal);
-                    badge.setBadgePoint(point);
-                    if(goal.getId() == 1L) { // 처음 생성한 목표를 성공했을 때 주는 기념 배지
-                        badgeService.addBadge(Badge.builder()
-                                .badgeName("Second Badge")
-                                .badgeDesc("Complete First Goal")
-                                .build());
-                    }
+                    badge.setBadgePoint(badge.getBadgePoint() + point);
+//                    if(goal.getId() == 1L) { // 처음 생성한 목표를 성공했을 때 주는 기념 배지
+//                        badgeService.addBadge(Badge.builder()
+//                                .badgeName("Second Badge")
+//                                .badgeDesc("Complete First Goal")
+//                                .build());
+//                    }
                     badgeService.addBadge(badge);
+                } else {
+                    log.error("fail : {}", goal.getId());
                 }
             }
+            goalRepository.save(goal);
         });
     }
 
