@@ -42,7 +42,6 @@ public class GoalServiceImpl implements GoalService {
                 .weekCount(goal.getWeekCount())
                 .count(goal.getCount())
                 .totalCount(goal.getTotalCount())
-                .doing(goal.getDoing())
                 .state(goal.getState())
                 .build();
         goalRepository.save(goal);
@@ -103,8 +102,7 @@ public class GoalServiceImpl implements GoalService {
         return badge;
     }
 
-//    int weekCheck= 0; // 일주일 기간 check
-//    int weekCheckCount = 0; // 한 주에 실천한 count check
+
 //    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
 //    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
     @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
@@ -113,30 +111,11 @@ public class GoalServiceImpl implements GoalService {
         LocalDate today = LocalDate.now();
 
         list.forEach(goal -> {
-            goal.setDoing(0); // goal의 doing 상태를 0으로 전환
-
-            // 일주일에 실행한 목표 실천 횟수 판별
-//            weekCheck++; // 매일 count
-//            log.info("weekCheck : {}", weekCheck);
-//            if(goal.getDoing() == 1) weekCheckCount++; // 해당일에 목표를 실천했을 때 count
-//            if(weekCheckCount < goal.getWeekCount()) {
-//                log.info("weekCheckCount : {}", weekCheckCount);
-//                goal.setDoing(0);
-//                goalRepository.save(goal);
-//            } else {
-//                goal.setDoing(1);
-//            }
-//            if(weekCheck == 7) {
-//                log.info("7");
-//                weekCheck = 0;
-//                weekCheckCount = 0;
-//                goal.setDoing(0);
-//                goalRepository.save(goal);
-//            }
+//            goal.setDoing(0); // goal의 doing 상태를 0으로 전환
 
             // 목표 종료일 판별
             if(goal.getEndDay().isBefore(today)) {
-                if(goal.getState() == 1) {
+                if(goal.getState() == 0) {
                     return;
                 } else {
                     goal.setState(1); //endDay 확인하고 state 변경
@@ -166,8 +145,4 @@ public class GoalServiceImpl implements GoalService {
         });
     }
 
-//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-//    public void testScheduler() {
-//        System.out.println("test");
-//    }
 }
