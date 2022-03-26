@@ -85,12 +85,6 @@ public class GoalServiceImpl implements GoalService{
     }
 
 
-    @Override
-    public List<Goal> get3DoingGoal(int state) {
-        log.info("대시보드에 보여줄 최근 진행중인 목표 3개");
-        return goalRepository.findTop3ByStateOrderByIdDesc(state);
-    }
-
     public Badge isComplete(Goal goal) { // 목표 달성 여부 파악하고 실행율에 따른 배지 및 포인트 생성
         int totalWeek = (int)Math.ceil(goal.getTotalCount() / 7); // 목표 기간이 몇주인지
         int remainderDay = goal.getTotalCount() % 7; // 몇주인지 계산하고 남는 일자
