@@ -14,7 +14,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DoingServiceImpl implements DoingService{
 
-    private DoingRepository doingRepository;
+    private final DoingRepository doingRepository;
 
     @Override
     public Doing addDoing(Doing doing) {

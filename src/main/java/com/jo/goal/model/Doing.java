@@ -16,15 +16,17 @@ public class Doing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    private Goal goalId;
+    @JoinColumn(name = "goal_id")
+    private Goal goal;
+    @Column(unique = true)
     private LocalDate checkDate;
     private String postTitle;
     private String postContent;
     private String postImg;
 
-    public Doing(Long id, Goal goalId, LocalDate checkDate, String postTitle, String postContent, String postImg) {
+    public Doing(Long id, Goal goal, LocalDate checkDate, String postTitle, String postContent, String postImg) {
         this.id = id;
-        this.goalId = goalId;
+        this.goal = goal;
         this.checkDate = checkDate;
         this.postTitle = postTitle;
         this.postContent = postContent;

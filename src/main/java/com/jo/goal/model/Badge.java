@@ -40,12 +40,8 @@ public class Badge {
             point = 50;
         } else if(goal.getTotalCount() < 90) {
             point = 100;
-        } else if(goal.getTotalCount() < 180) {
+        } else if(goal.getTotalCount() <= 180) {
             point = 300;
-        } else if(goal.getTotalCount() < 365) {
-            point = 1000;
-        } else if(goal.getTotalCount() == 365) {
-            point = 2000;
         }
         return point;
     }
