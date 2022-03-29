@@ -12,10 +12,10 @@ public class GoalDto {
     private String goalDesc;
     private LocalDate startDay;
     private LocalDate endDay;
+    private int period;
     private int weekCount;
     private int totalCount;
     private int count;
-    private int doing;
-    private int state;
+    private boolean state;
 
 }

@@ -1,6 +1,5 @@
 package com.jo.goal.model;
 
-import com.jo.goal.base.UtilTimeSetter;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
+import java.time.LocalDate;
+
 
 @Builder
 @Data
@@ -22,25 +22,33 @@ public class Goal{
     private Long id;
     private String goalTitle;
     private String goalDesc;
-    private Date startDay;
-    private Date endDay;
+    private LocalDate startDay;
+    private LocalDate endDay;
+    private int period;
     private int weekCount;
     private int totalCount;
     private int count;
-    private int doing;
-    private int state;
+    private boolean state = true;
+    private boolean result;
+
 
     @Builder
-    public Goal(Long id, String goalTitle, String goalDesc, Date startDay, Date endDay, int weekCount, int totalCount, int count, int doing, int state) {
+    public Goal(Long id, String goalTitle, String goalDesc, LocalDate startDay, LocalDate endDay, int period, int weekCount, int totalCount, int count, boolean state, boolean result) {
         this.id = id;
         this.goalTitle = goalTitle;
         this.goalDesc = goalDesc;
         this.startDay = startDay;
         this.endDay = endDay;
+        this.period = period;
         this.weekCount = weekCount;
         this.totalCount = totalCount;
         this.count = count;
-        this.doing = doing;
         this.state = state;
+        this.result = result;
     }
+
+    public boolean getState() {
+        return true;
+    }
+
 }
