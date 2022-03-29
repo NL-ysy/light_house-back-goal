@@ -1,19 +1,21 @@
 package com.jo.goal.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Builder
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class Goal{
 
@@ -28,12 +30,15 @@ public class Goal{
     private int weekCount;
     private int totalCount;
     private int count;
-    private boolean state = true;
+    private int state = 0;
     private boolean result;
+    @JsonIgnore
+    @OneToMany(mappedBy = "goal", cascade = CascadeType.REMOVE)
+    private List<Doing> doing = new ArrayList<>();
 
 
     @Builder
-    public Goal(Long id, String goalTitle, String goalDesc, LocalDate startDay, LocalDate endDay, int period, int weekCount, int totalCount, int count, boolean state, boolean result) {
+    public Goal(Long id, String goalTitle, String goalDesc, LocalDate startDay, LocalDate endDay, int period, int weekCount, int totalCount, int count, int state, boolean result) {
         this.id = id;
         this.goalTitle = goalTitle;
         this.goalDesc = goalDesc;
@@ -45,10 +50,6 @@ public class Goal{
         this.count = count;
         this.state = state;
         this.result = result;
-    }
-
-    public boolean getState() {
-        return true;
     }
 
 }
