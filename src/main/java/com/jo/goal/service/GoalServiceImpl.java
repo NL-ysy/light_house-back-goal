@@ -43,6 +43,7 @@ public class GoalServiceImpl implements GoalService {
     int week = 1; // 목표 시작 주 (1주차 일 때부터 시작)
     public void checkDoing(Goal goal) { // 일주일 동안의 목표 체크
         log.info("checkDoing by goalId : {}", goal.getId());
+
         List<Doing> list = doingService.getAllDoing();
 
         if(goal.getState() == 0 && list.size() < goal.getWeekCount() * week) {
@@ -155,7 +156,7 @@ public class GoalServiceImpl implements GoalService {
 
         list.forEach(goal -> {
             if(goal.getEndDay().isBefore(today)) {
-                goal.setState(1); //endDay 확인하고 state 변경(종료되면 false)
+                goal.setState(1); //endDay 확인하고 state 변경(종료되면 1)
 
                 Badge badge = isComplete(goal); // 목표를 달성했을 때 배지 생성
                 if(badge != null) {
