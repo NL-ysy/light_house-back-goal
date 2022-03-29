@@ -40,59 +40,59 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.save(goal);
     }
 
-    int week = 1; // 목표 1주차일 때
-    public void checkDoing(Goal goal) {
-        log.info("checkDoing by goalId : {}", goal.getId());
-        List<Doing> list = doingService.getAllDoing();
-
-        if(goal.getState() && list.size() < goal.getWeekCount() * week) {
-            log.info("checkDoing");
-            LocalDate now = LocalDate.now();
-            LocalDate endWeek = goal.getStartDay().plusWeeks(week);
-
-            if(now.isBefore(endWeek)) { // 이번 주 목표 실천 counting
-                log.info("this week : {}", week);
-                goal.setCount(goal.getCount() + 1);
-
-                doingService.addDoing(Doing.builder()
-                        .goal(goal)
-                        .checkDate(LocalDate.now())
-                        .build());
-            } else if(now.isEqual(endWeek) || now.isAfter(endWeek)) {
-                week++;
-                log.info("next week : {}", week);
-                checkDoing(goal);
-            }
-        } else {
-            log.error("checkDoing error");
-        }
-
-        goalRepository.save(goal);
-    }
+//    int week = 1; // 목표 시작 주 (1주차 일 때부터 시작)
+//    public void checkDoing(Goal goal) { // 일주일 동안의 목표 체크
+//        log.info("checkDoing by goalId : {}", goal.getId());
+//        List<Doing> list = doingService.getAllDoing();
+//
+//        if(goal.getState() && list.size() < goal.getWeekCount() * week) {
+//            log.info("checkDoing");
+//            LocalDate now = LocalDate.now(); // 현재
+//            LocalDate endWeek = goal.getStartDay().plusWeeks(week); // 목표 시작일부터 week의 주 만큼 지난 날 (1주차 일 때 -> 8일 째 되는 날)
+//
+//            if(now.isBefore(endWeek)) { // 이번 주 목표 실천 counting
+//                log.info("this week : {}", week);
+//                goal.setCount(goal.getCount() + 1);
+//
+//                doingService.addDoing(Doing.builder()
+//                        .goal(goal)
+//                        .checkDate(LocalDate.now())
+//                        .build());
+//            } else if(now.isEqual(endWeek) || now.isAfter(endWeek)) { // 다음 주로 넘어갈 때 (1주차 일 때 -> 8일 이상인 날)
+//                week++; // week = 2
+//                log.info("next week : {}", week);
+//                checkDoing(goal); // 다음 일주일 동안의 목표 체크
+//            }
+//        } else {
+//            log.error("checkDoing error");
+//        }
+//
+//        goalRepository.save(goal);
+//    }
 
     @Transactional
     @Override
-    public Goal editGoal(GoalDto goalDto) {
-//        log.info("edit goal. {}", goalRepository.findById(goal.getId()).get());
-//        Goal editedGoal = new Goal();
-//        editedGoal = Goal.builder()
-//                .id(goal.getId())
-//                .goalTitle(goal.getGoalTitle())
-//                .goalDesc(goal.getGoalDesc())
-//                .startDay(goal.getStartDay())
-//                .endDay(goal.getEndDay())
-//                .weekCount(goal.getWeekCount())
-//                .count(goal.getCount())
-//                .totalCount(goal.getTotalCount())
-//                .state(goal.getState())
-//                .build();
-//        goalRepository.save(goal);
-//        return editedGoal;
+    public Goal editGoal(Goal goal) {
+        log.info("edit goal. {}", goalRepository.findById(goal.getId()).get());
+        Goal editedGoal = new Goal();
+        editedGoal = Goal.builder()
+                .id(goal.getId())
+                .goalTitle(goal.getGoalTitle())
+                .goalDesc(goal.getGoalDesc())
+                .startDay(goal.getStartDay())
+                .endDay(goal.getEndDay())
+                .weekCount(goal.getWeekCount())
+                .count(goal.getCount())
+                .totalCount(goal.getTotalCount())
+                .state(goal.getState())
+                .build();
+        goalRepository.save(goal);
+        return editedGoal;
 
-        Goal goal = goalRepository.findById(goalDto.getId()).get();
-        checkDoing(goal);
-
-        return goalRepository.save(goal);
+//        Goal goal = goalRepository.findById(goalDto.getId()).get();
+//        checkDoing(goal);
+//
+//        return goalRepository.save(goal);
     }
 
     @Transactional
@@ -156,11 +156,11 @@ public class GoalServiceImpl implements GoalService {
         list.forEach(goal -> {
             if(goal.getEndDay().isBefore(today)) {
                 goal.setState(false); //endDay 확인하고 state 변경(종료되면 false)
-                goalRepository.save(goal);
 
                 Badge badge = isComplete(goal); // 목표를 달성했을 때 배지 생성
                 if(badge != null) {
-                    log.info("get badge");
+                    log.info("set result and get badge");
+                    goal.setResult(true); // 목표 달성에 성공한 경우 true
                     int point = badge.endDayPoint(goal); // 설정한 목표 기간에 따른 배지 증정
                     badge.setBadgePoint(badge.getBadgePoint() + point);
                     if (goal.getId() == 1L) { // 처음 생성한 목표를 성공했을 때 주는 기념 배지
@@ -174,6 +174,7 @@ public class GoalServiceImpl implements GoalService {
                     }
                     badgeService.addBadge(badge);
                 }
+                goalRepository.save(goal);
             }
         });
     }

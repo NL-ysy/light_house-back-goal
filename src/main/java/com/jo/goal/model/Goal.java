@@ -29,10 +29,11 @@ public class Goal{
     private int totalCount;
     private int count;
     private boolean state = true;
+    private boolean result;
 
 
     @Builder
-    public Goal(Long id, String goalTitle, String goalDesc, LocalDate startDay, LocalDate endDay, int period, int weekCount, int totalCount, int count, boolean state) {
+    public Goal(Long id, String goalTitle, String goalDesc, LocalDate startDay, LocalDate endDay, int period, int weekCount, int totalCount, int count, boolean state, boolean result) {
         this.id = id;
         this.goalTitle = goalTitle;
         this.goalDesc = goalDesc;
@@ -43,9 +44,11 @@ public class Goal{
         this.totalCount = totalCount;
         this.count = count;
         this.state = state;
+        this.result = result;
     }
 
     public boolean getState() {
         return true;
     }
+
 }

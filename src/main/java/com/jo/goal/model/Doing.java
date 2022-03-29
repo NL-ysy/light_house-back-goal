@@ -18,7 +18,7 @@ public class Doing {
     @ManyToOne
     @JoinColumn(name = "goal_id")
     private Goal goal;
-    @Column(unique = true)
+//    @Column(unique = true)
     private LocalDate checkDate;
     private String postTitle;
     private String postContent;

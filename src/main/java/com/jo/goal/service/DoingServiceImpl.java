@@ -45,4 +45,5 @@ public class DoingServiceImpl implements DoingService{
         log.info("delete Doing by {id}", id);
         doingRepository.deleteById(id);
     }
+
 }
