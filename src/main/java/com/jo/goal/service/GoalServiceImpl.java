@@ -44,7 +44,7 @@ public class GoalServiceImpl implements GoalService {
     public void checkDoing(Goal goal) { // 일주일 동안의 목표 체크
         log.info("checkDoing by goalId : {}", goal.getId());
 
-        List<Doing> list = doingService.getAllDoing();
+        List<Doing> list = doingService.findAllByGoalId(goal.getId());
 
         if(goal.getState() == 0 && list.size() < goal.getWeekCount() * week) {
             log.info("checkDoing");

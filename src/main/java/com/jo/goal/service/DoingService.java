@@ -12,4 +12,5 @@ public interface DoingService {
     List<Doing> getAllDoing();
     Optional<Doing> getDoingById(Long id);
     void delDoing(Long id);
+    List<Doing> findAllByGoalId(Long goalId);
 }

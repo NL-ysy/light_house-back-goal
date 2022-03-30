@@ -48,4 +48,8 @@ public class DoingServiceImpl implements DoingService{
         doingRepository.deleteById(id);
     }
 
+    @Override
+    public List<Doing> findAllByGoalId(Long goalId) {
+        return doingRepository.findAllByGoalId(goalId);
+    }
 }
