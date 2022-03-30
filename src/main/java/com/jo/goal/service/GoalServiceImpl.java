@@ -40,33 +40,40 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.save(goal);
     }
 
-    int week = 1; // 목표 시작 주 (1주차 일 때부터 시작)
-    public void checkDoing(Goal goal) { // 일주일 동안의 목표 체크
+
+    public void checkDoing(Goal goal) {
         log.info("checkDoing by goalId : {}", goal.getId());
 
-        List<Doing> list = doingService.findAllByGoalId(goal.getId());
+        List<Doing> list = doingService.findAllByGoalId(goal.getId()); // Doing 리스트
 
-        if(goal.getState() == 0 && list.size() < goal.getWeekCount() * week) {
+        if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
             log.info("checkDoing");
-            LocalDate now = LocalDate.now(); // 현재
-            LocalDate endWeek = goal.getStartDay().plusWeeks(week); // 목표 시작일부터 week의 주 만큼 지난 날 (1주차 일 때 -> 8일 째 되는 날)
+            goal.setCount(goal.getCount() + 1);
 
-            if(now.isBefore(endWeek)) { // 이번 주 목표 실천 counting
-                log.info("this week : {}", week);
-                goal.setCount(goal.getCount() + 1);
-
-                doingService.addDoing(Doing.builder()
-                        .goal(goal)
-                        .checkDate(LocalDate.now())
-                        .build());
-            } else if(now.isEqual(endWeek) || now.isAfter(endWeek)) { // 다음 주로 넘어갈 때 (1주차 일 때 -> 8일 이상인 날)
-                week++; // week = 2
-                log.info("next week : {}", week);
-                checkDoing(goal); // 다음 일주일 동안의 목표 체크
-            }
+            doingService.addDoing(Doing.builder()
+                    .goal(goal)
+                    .checkDate(LocalDate.now())
+                    .build());
         } else {
             log.error("checkDoing error");
         }
+
+//        LocalDate now = LocalDate.now();
+//        LocalDate lastWeekDay = goal.getStartDay().plusWeeks(1);
+//
+//        if(now.isBefore(lastWeekDay)) {
+//            if(goal.getState() == 0 && list.size() - goal.getCount() < goal.getWeekCount()) {
+//                log.info("checkDoing");
+//                goal.setCount(goal.getCount() + 1);
+//
+//                doingService.addDoing(Doing.builder()
+//                        .goal(goal)
+//                        .checkDate(LocalDate.now())
+//                        .build());
+//            } else {
+//                log.error("checkDoing error");
+//            }
+//        }
 
         goalRepository.save(goal);
     }
@@ -148,8 +155,8 @@ public class GoalServiceImpl implements GoalService {
 
 
 //    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
-//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
