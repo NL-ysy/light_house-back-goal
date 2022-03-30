@@ -58,23 +58,6 @@ public class GoalServiceImpl implements GoalService {
             log.error("checkDoing error");
         }
 
-//        LocalDate now = LocalDate.now();
-//        LocalDate lastWeekDay = goal.getStartDay().plusWeeks(1);
-//
-//        if(now.isBefore(lastWeekDay)) {
-//            if(goal.getState() == 0 && list.size() - goal.getCount() < goal.getWeekCount()) {
-//                log.info("checkDoing");
-//                goal.setCount(goal.getCount() + 1);
-//
-//                doingService.addDoing(Doing.builder()
-//                        .goal(goal)
-//                        .checkDate(LocalDate.now())
-//                        .build());
-//            } else {
-//                log.error("checkDoing error");
-//            }
-//        }
-
         goalRepository.save(goal);
     }
 
@@ -162,7 +145,7 @@ public class GoalServiceImpl implements GoalService {
         LocalDate today = LocalDate.now();
 
         list.forEach(goal -> {
-            if(goal.getEndDay().isBefore(today)) {
+            if(goal.getEndDay().isBefore(today) && goal.getState() == 0) {
                 goal.setState(1); //endDay 확인하고 state 변경(종료되면 1)
 
                 Badge badge = isComplete(goal); // 목표를 달성했을 때 배지 생성
