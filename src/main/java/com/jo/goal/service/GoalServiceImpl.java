@@ -41,14 +41,19 @@ public class GoalServiceImpl implements GoalService {
     }
 
 
-    public void checkDoing(Goal goal) {
-        log.info("checkDoing by goalId : {}", goal.getId());
+    public Goal checkDoing(GoalDto goalDto) { // addCount and addDoing
+        log.info("checkDoing by goalId : {}", goalDto.getId());
+        Goal goal = goalRepository.findById(goalDto.getId()).get();
 
-        List<Doing> list = doingService.findAllByGoalId(goal.getId()); // Doing 리스트
+//        List<Doing> list = doingService.findAllByGoalId(goal.getId()); // Doing 리스트
+//        DayOfWeek dow = goal.getStartDay().getDayOfWeek();
+//        log.info("day of week : {}", dow);
+//        log.info("start day : {}", goal.getStartDay().getDayOfYear());
+//        log.info("next week : {}", goal.getStartDay().getDayOfYear() + 7);
 
         if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
             log.info("checkDoing");
-            goal.setCount(goal.getCount() + 1);
+            goal.setCount(goalDto.getCount()); // front에서 count + 1 put
 
             doingService.addDoing(Doing.builder()
                     .goal(goal)
@@ -58,7 +63,7 @@ public class GoalServiceImpl implements GoalService {
             log.error("checkDoing error");
         }
 
-        goalRepository.save(goal);
+        return goalRepository.save(goal);
     }
 
     @Transactional
@@ -80,8 +85,8 @@ public class GoalServiceImpl implements GoalService {
 //        goalRepository.save(goal);
 //        return editedGoal;
 
-        Goal goal = goalRepository.findById(goalDto.getId()).get();
-        checkDoing(goal);
+//        Goal goal = goalRepository.findById(goalDto.getId()).get();
+        Goal goal = checkDoing(goalDto);
 
         return goalRepository.save(goal);
     }
@@ -116,15 +121,15 @@ public class GoalServiceImpl implements GoalService {
     public Badge isComplete(Goal goal) { // 목표 달성 여부 파악하고 실행율에 따른 배지 및 포인트 생성
         Badge badge = null;
 
-        if(goal.getTotalCount() / goal.getCount() == 1) { // 100% 달성
+        if(goal.getCount() / goal.getTotalCount() == 1) { // 100% 달성
             log.info("100");
             badge = new Badge();
             badge.setBadgePoint(15);
-        } else if(goal.getTotalCount() / goal.getCount() >= 0.9) { // 90% 달성
+        } else if(goal.getCount() / goal.getTotalCount() >= 0.9) { // 90% 달성
             log.info("90");
             badge = new Badge();
             badge.setBadgePoint(10);
-        } else if(goal.getTotalCount() / goal.getCount() >= 0.8) { // 80% 달성
+        } else if(goal.getCount() / goal.getTotalCount() >= 0.8) { // 80% 달성
             log.info("80");
             badge = new Badge();
             badge.setBadgePoint(5);
@@ -138,8 +143,8 @@ public class GoalServiceImpl implements GoalService {
 
 
 //    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
-    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
+    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();

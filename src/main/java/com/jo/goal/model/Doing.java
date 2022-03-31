@@ -15,7 +15,7 @@ public class Doing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "goal_id")
     private Goal goal;
 //    @Column(unique = true)
