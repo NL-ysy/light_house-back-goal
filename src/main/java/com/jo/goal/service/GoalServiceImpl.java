@@ -46,14 +46,15 @@ public class GoalServiceImpl implements GoalService {
         Goal goal = goalRepository.findById(goalDto.getId()).get();
 
 //        List<Doing> list = doingService.findAllByGoalId(goal.getId()); // Doing 리스트
-//        DayOfWeek dow = goal.getStartDay().getDayOfWeek();
-//        log.info("day of week : {}", dow);
-//        log.info("start day : {}", goal.getStartDay().getDayOfYear());
-//        log.info("next week : {}", goal.getStartDay().getDayOfYear() + 7);
+//        DayOfWeek dayOfWeek = goal.getStartDay().getDayOfWeek();
+//        log.info("day of week : {}", dayOfWeek);
+//        log.info("start : {}", goal.getStartDay().getDayOfYear());
+//        log.info("end : {}", goal.getEndDay().getDayOfYear());
 
         if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
             log.info("checkDoing");
-            goal.setCount(goalDto.getCount()); // front에서 count + 1 put
+//            goal.setCount(goalDto.getCount()); // front에서 count + 1 put
+            goal.setCount(goal.getCount() + goalDto.getCount());
 
             doingService.addDoing(Doing.builder()
                     .goal(goal)
