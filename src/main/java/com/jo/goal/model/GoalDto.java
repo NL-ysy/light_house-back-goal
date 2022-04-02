@@ -16,6 +16,7 @@ public class GoalDto {
     private int weekCount;
     private int totalCount;
     private int count;
-    private boolean state;
+    private int state;
+    private boolean result;
 
 }

@@ -1,11 +1,13 @@
 package com.jo.goal.service;
 
 import com.jo.goal.model.Doing;
+import com.jo.goal.model.Goal;
 import com.jo.goal.repository.DoingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,4 +48,13 @@ public class DoingServiceImpl implements DoingService{
         doingRepository.deleteById(id);
     }
 
+    @Override
+    public List<Doing> findAllByGoalId(Long goalId) {
+        return doingRepository.findAllByGoalId(goalId);
+    }
+
+    @Override
+    public List<Doing> findAllByWeek(int week) {
+        return doingRepository.findAllByWeek(week);
+    }
 }
