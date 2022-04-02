@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface DoingRepository extends JpaRepository<Doing, Long> {
     List<Doing> findAllByGoalId(Long goalId);
+    List<Doing> findAllByWeek(int week);
 }

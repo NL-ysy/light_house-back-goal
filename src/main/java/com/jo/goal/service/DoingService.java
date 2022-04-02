@@ -2,7 +2,6 @@ package com.jo.goal.service;
 
 import com.jo.goal.model.Doing;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,4 +12,5 @@ public interface DoingService {
     Optional<Doing> getDoingById(Long id);
     void delDoing(Long id);
     List<Doing> findAllByGoalId(Long goalId);
+    List<Doing> findAllByWeek(int week);
 }

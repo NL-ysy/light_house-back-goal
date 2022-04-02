@@ -52,4 +52,9 @@ public class DoingServiceImpl implements DoingService{
     public List<Doing> findAllByGoalId(Long goalId) {
         return doingRepository.findAllByGoalId(goalId);
     }
+
+    @Override
+    public List<Doing> findAllByWeek(int week) {
+        return doingRepository.findAllByWeek(week);
+    }
 }

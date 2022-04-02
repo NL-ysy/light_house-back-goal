@@ -11,6 +11,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -40,29 +41,54 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.save(goal);
     }
 
+    public int checkWeek(Goal goal) {
+        int now = LocalDate.now().getDayOfYear();
+        int start = goal.getStartDay().getDayOfYear();
+        int week = 1;
+
+        if((now - start) % 7 == 0) {
+            week++;
+        }
+        log.info("week : {}", week);
+        return week;
+    }
+
 
     public Goal checkDoing(GoalDto goalDto) { // addCount and addDoing
         log.info("checkDoing by goalId : {}", goalDto.getId());
         Goal goal = goalRepository.findById(goalDto.getId()).get();
 
-//        List<Doing> list = doingService.findAllByGoalId(goal.getId()); // Doing 리스트
-//        DayOfWeek dayOfWeek = goal.getStartDay().getDayOfWeek();
-//        log.info("day of week : {}", dayOfWeek);
-//        log.info("start : {}", goal.getStartDay().getDayOfYear());
-//        log.info("end : {}", goal.getEndDay().getDayOfYear());
+        int thisWeek = checkWeek(goal);
 
-        if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
-            log.info("checkDoing");
-//            goal.setCount(goalDto.getCount()); // front에서 count + 1 put
-            goal.setCount(goal.getCount() + goalDto.getCount());
-
-            doingService.addDoing(Doing.builder()
-                    .goal(goal)
-                    .checkDate(LocalDate.now())
-                    .build());
+        if(doingService.findAllByWeek(thisWeek).size() < goal.getWeekCount()) {
+            if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
+                log.info("checkDoing");
+                goal.setCount(goal.getCount() + goalDto.getCount());
+                doingService.addDoing(Doing.builder()
+                        .goal(goal)
+                        .checkDate(LocalDate.now())
+                        .week(thisWeek)
+                        .build());
+            }
         } else {
             log.error("checkDoing error");
         }
+
+
+//        if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
+//            log.info("checkDoing");
+//
+////            goal.setCount(goalDto.getCount()); // front에서 count + 1 put
+//            goal.setCount(goal.getCount() + goalDto.getCount());
+//
+//            doingService.addDoing(Doing.builder()
+//                    .goal(goal)
+//                    .checkDate(LocalDate.now())
+//                    .week(thisWeek)
+//                    .build());
+//        } else {
+//            log.error("checkDoing error");
+//        }
 
         return goalRepository.save(goal);
     }
