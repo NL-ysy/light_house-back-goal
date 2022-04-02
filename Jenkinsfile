@@ -18,7 +18,7 @@ pipeline {
     stage('deploy') {
       steps {
         echo 'deploy done3'
-        sh 'aws elasticbeanstalk create-application-version --region us-east-1 --application-name springboot-lh-goal --version-label ${BUILD_TAG} --source-bundle S3Bucket="backbkgoal",S3Key="application.war"'
+        sh 'aws elasticbeanstalk create-application-version --region us-east-1 --application-name springboot-lh-goal --version-label ${BUILD_TAG} --source-bundle S3Bucket="lh-goal",S3Key="application.war"'
         sh 'aws elasticbeanstalk update-environment --region us-east-1 --environment-name Springbootlhgoal-env --version-label ${BUILD_TAG}'
         slackSend (color: '#00cec9', message: "Backend 빌드 완료. 성공 실패는 따로 확인!!! STATUS : Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
       }
