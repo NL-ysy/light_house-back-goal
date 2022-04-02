@@ -46,9 +46,12 @@ public class GoalServiceImpl implements GoalService {
         int start = goal.getStartDay().getDayOfYear();
         int week = 1;
 
-        if((now - start) % 7 == 0) {
-            week++;
+        for(int i = 1; i <= now - start; i++) {
+            if(i % 7 == 0) {
+                week++;
+            }
         }
+
         log.info("week : {}", week);
         return week;
     }
