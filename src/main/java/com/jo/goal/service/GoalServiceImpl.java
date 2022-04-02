@@ -33,7 +33,7 @@ public class GoalServiceImpl implements GoalService {
         List<Goal> list = goalRepository.findAll();
         if(list.size() < 1) { // 첫 목표 생성 기념 배지
             badgeService.addBadge(Badge.builder()
-                    .badgeName("First Badge")
+                    .badgeName("First Badge!!!!!!!!!!!!!!!!!!!!!!!!")
                     .badgeDesc("Set Goal")
                     .build());
         }
@@ -46,8 +46,10 @@ public class GoalServiceImpl implements GoalService {
         int start = goal.getStartDay().getDayOfYear();
         int week = 1;
 
-        if((now - start) % 7 == 0) {
-            week++;
+        for(int i = 1; i <= now - start; i++) {
+            if(i % 7 == 0) {
+                week++;
+            }
         }
         log.info("week : {}", week);
         return week;
