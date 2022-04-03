@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +40,7 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.save(goal);
     }
 
-    public int checkWeek(Goal goal) {
+    public int checkWeek(Goal goal) { // 총 실행 기간 중 현재 몇 주차인지 확인
         int now = LocalDate.now().getDayOfYear();
         int start = goal.getStartDay().getDayOfYear();
         int week = 1;
@@ -57,38 +56,40 @@ public class GoalServiceImpl implements GoalService {
     }
 
 
-    public Goal checkDoing(GoalDto goalDto) { // addCount and addDoing
+    public Goal checkDoing(GoalDto goalDto) { // goal Count and add Doing
         log.info("checkDoing by goalId : {}", goalDto.getId());
         Goal goal = goalRepository.findById(goalDto.getId()).get();
 
         int thisWeek = checkWeek(goal);
 
-        if(doingService.findAllByWeek(thisWeek).size() < goal.getWeekCount()) {
-            if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
-                log.info("checkDoing");
-                goal.setCount(goal.getCount() + goalDto.getCount());
-                doingService.addDoing(Doing.builder()
-                        .goal(goal)
-                        .checkDate(LocalDate.now())
-                        .week(thisWeek)
-                        .build());
+        if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
+            if((doingService.findAllByWeek(thisWeek).size() < goal.getWeekCount())) { // 일주일 동안 실천하기로 한 횟수만큼 count
+                if(doingService.findByGoalIdAndCheckDate(goal.getId(), LocalDate.now()) == null) { // 하루에 1번만 목표 실천 인증 가능
+                    log.info("checkDoing");
+    //                goal.setCount(goalDto.getCount()); // front에서 count + 1 put
+                    goal.setCount(goal.getCount() + goalDto.getCount());
+                    doingService.addDoing(Doing.builder()
+                            .goal(goal)
+                            .checkDate(LocalDate.now())
+                            .week(thisWeek)
+                            .build());
+                }
             }
         } else {
-            log.error("checkDoing error");
+            log.error("check doing error");
         }
 
-
-//        if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
-//            log.info("checkDoing");
-//
-////            goal.setCount(goalDto.getCount()); // front에서 count + 1 put
-//            goal.setCount(goal.getCount() + goalDto.getCount());
-//
-//            doingService.addDoing(Doing.builder()
-//                    .goal(goal)
-//                    .checkDate(LocalDate.now())
-//                    .week(thisWeek)
-//                    .build());
+//        if(doingService.findAllByWeek(thisWeek).size() < goal.getWeekCount()) {
+//            if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
+//                log.info("checkDoing");
+////                goal.setCount(goalDto.getCount()); // front에서 count + 1 put
+//                goal.setCount(goal.getCount() + goalDto.getCount());
+//                doingService.addDoing(Doing.builder()
+//                        .goal(goal)
+//                        .checkDate(LocalDate.now())
+//                        .week(thisWeek)
+//                        .build());
+//            }
 //        } else {
 //            log.error("checkDoing error");
 //        }
