@@ -34,6 +34,7 @@ public class GoalServiceImpl implements GoalService {
             badgeService.addBadge(Badge.builder()
                     .badgeName("First Badge!!!")
                     .badgeDesc("Set Goal")
+                    .type("special")
                     .build());
         }
 
@@ -155,15 +156,15 @@ public class GoalServiceImpl implements GoalService {
         if(goal.getCount() / goal.getTotalCount() == 1) { // 100% 달성
             log.info("100");
             badge = new Badge();
-            badge.setBadgePoint(15);
+            badge.setPoint(15);
         } else if(goal.getCount() / goal.getTotalCount() >= 0.9) { // 90% 달성
             log.info("90");
             badge = new Badge();
-            badge.setBadgePoint(10);
+            badge.setPoint(10);
         } else if(goal.getCount() / goal.getTotalCount() >= 0.8) { // 80% 달성
             log.info("80");
             badge = new Badge();
-            badge.setBadgePoint(5);
+            badge.setPoint(5);
         } else {
             log.error("fail");
             return null;
@@ -189,13 +190,14 @@ public class GoalServiceImpl implements GoalService {
                     log.info("set result and get badge");
                     goal.setResult(true); // 목표 달성에 성공한 경우 true
                     int point = badge.endDayPoint(goal); // 설정한 목표 기간에 따른 배지 증정
-                    badge.setBadgePoint(badge.getBadgePoint() + point);
+                    badge.setPoint(badge.getPoint() + point);
                     if (goal.getId() == 1L) { // 처음 생성한 목표를 성공했을 때 주는 기념 배지
                         List<Badge> badgeList = badgeService.getAllBadge();
                         if (!badgeList.contains("Second Badge")) { // 첫 목표 생성 기념 배지가 없을 때만 배지 증정
                             badgeService.addBadge(Badge.builder()
                                     .badgeName("Second Badge")
                                     .badgeDesc("Complete First Goal")
+                                    .type("special")
                                     .build());
                         }
                     }
