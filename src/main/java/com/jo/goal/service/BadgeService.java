@@ -12,4 +12,5 @@ public interface BadgeService {
     List<Badge> getAllBadge();
     Optional<Badge> getBadgeById(Long id);
     void delBadge(Long id);
+    List<Badge> findAllByType(String type);
 }

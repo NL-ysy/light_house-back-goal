@@ -51,4 +51,9 @@ public class BadgeServiceImpl implements BadgeService {
         log.info("del badge by id {}!", id);
         badgeRepository.deleteById(id);
     }
+
+    @Override
+    public List<Badge> findAllByType(String type) {
+        return badgeRepository.findAllByType(type);
+    }
 }

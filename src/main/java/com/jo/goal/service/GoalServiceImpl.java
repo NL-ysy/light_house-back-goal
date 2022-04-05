@@ -157,14 +157,17 @@ public class GoalServiceImpl implements GoalService {
             log.info("100");
             badge = new Badge();
             badge.setPoint(15);
+            badge.setType("goal");
         } else if(goal.getCount() / goal.getTotalCount() >= 0.9) { // 90% 달성
             log.info("90");
             badge = new Badge();
             badge.setPoint(10);
+            badge.setType("goal");
         } else if(goal.getCount() / goal.getTotalCount() >= 0.8) { // 80% 달성
             log.info("80");
             badge = new Badge();
             badge.setPoint(5);
+            badge.setType("goal");
         } else {
             log.error("fail");
             return null;
@@ -175,8 +178,8 @@ public class GoalServiceImpl implements GoalService {
 
 
 //    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
-//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
