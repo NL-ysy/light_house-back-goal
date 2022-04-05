@@ -20,15 +20,17 @@ public class Badge {
     private String badgeName;
     private String badgeDesc;
     private String badgeImg;
-    private int badgePoint = 0;
-
+    private int point = 0;
+    private String type;
 
     @Builder
-    public Badge(String badgeName, String badgeDesc, String badgeImg, int badgePoint) {
+    public Badge(Long id, String badgeName, String badgeDesc, String badgeImg, int point, String type) {
+        this.id = id;
         this.badgeName = badgeName;
         this.badgeDesc = badgeDesc;
         this.badgeImg = badgeImg;
-        this.badgePoint = badgePoint;
+        this.point = point;
+        this.type = type;
     }
 
     // 총 진행 기간에 따른 포인트 부여

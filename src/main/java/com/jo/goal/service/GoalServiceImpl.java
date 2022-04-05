@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -35,13 +34,14 @@ public class GoalServiceImpl implements GoalService {
             badgeService.addBadge(Badge.builder()
                     .badgeName("First Badge!!!")
                     .badgeDesc("Set Goal")
+                    .type("special")
                     .build());
         }
 
         return goalRepository.save(goal);
     }
 
-    public int checkWeek(Goal goal) {
+    public int checkWeek(Goal goal) { // 총 실행 기간 중 현재 몇 주차인지 확인
         int now = LocalDate.now().getDayOfYear();
         int start = goal.getStartDay().getDayOfYear();
         int week = 1;
@@ -51,43 +51,46 @@ public class GoalServiceImpl implements GoalService {
                 week++;
             }
         }
+
         log.info("week : {}", week);
         return week;
     }
 
 
-    public Goal checkDoing(GoalDto goalDto) { // addCount and addDoing
+    public Goal checkDoing(GoalDto goalDto) { // goal Count and add Doing
         log.info("checkDoing by goalId : {}", goalDto.getId());
         Goal goal = goalRepository.findById(goalDto.getId()).get();
 
         int thisWeek = checkWeek(goal);
 
-        if(doingService.findAllByWeek(thisWeek).size() < goal.getWeekCount()) {
-            if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
-                log.info("checkDoing");
-                goal.setCount(goal.getCount() + goalDto.getCount());
-                doingService.addDoing(Doing.builder()
-                        .goal(goal)
-                        .checkDate(LocalDate.now())
-                        .week(thisWeek)
-                        .build());
+        if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
+            if((doingService.findAllByWeek(thisWeek).size() < goal.getWeekCount())) { // 일주일 동안 실천하기로 한 횟수만큼 count
+                if(doingService.findByGoalIdAndCheckDate(goal.getId(), LocalDate.now()) == null) { // 하루에 1번만 목표 실천 인증 가능
+                    log.info("checkDoing");
+    //                goal.setCount(goalDto.getCount()); // front에서 count + 1 put
+                    goal.setCount(goal.getCount() + goalDto.getCount());
+                    doingService.addDoing(Doing.builder()
+                            .goal(goal)
+                            .checkDate(LocalDate.now())
+                            .week(thisWeek)
+                            .build());
+                }
             }
         } else {
-            log.error("checkDoing error");
+            log.error("check doing error");
         }
 
-
-//        if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
-//            log.info("checkDoing");
-//
-////            goal.setCount(goalDto.getCount()); // front에서 count + 1 put
-//            goal.setCount(goal.getCount() + goalDto.getCount());
-//
-//            doingService.addDoing(Doing.builder()
-//                    .goal(goal)
-//                    .checkDate(LocalDate.now())
-//                    .week(thisWeek)
-//                    .build());
+//        if(doingService.findAllByWeek(thisWeek).size() < goal.getWeekCount()) {
+//            if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
+//                log.info("checkDoing");
+////                goal.setCount(goalDto.getCount()); // front에서 count + 1 put
+//                goal.setCount(goal.getCount() + goalDto.getCount());
+//                doingService.addDoing(Doing.builder()
+//                        .goal(goal)
+//                        .checkDate(LocalDate.now())
+//                        .week(thisWeek)
+//                        .build());
+//            }
 //        } else {
 //            log.error("checkDoing error");
 //        }
@@ -153,15 +156,18 @@ public class GoalServiceImpl implements GoalService {
         if(goal.getCount() / goal.getTotalCount() == 1) { // 100% 달성
             log.info("100");
             badge = new Badge();
-            badge.setBadgePoint(15);
+            badge.setPoint(15);
+            badge.setType("goal");
         } else if(goal.getCount() / goal.getTotalCount() >= 0.9) { // 90% 달성
             log.info("90");
             badge = new Badge();
-            badge.setBadgePoint(10);
+            badge.setPoint(10);
+            badge.setType("goal");
         } else if(goal.getCount() / goal.getTotalCount() >= 0.8) { // 80% 달성
             log.info("80");
             badge = new Badge();
-            badge.setBadgePoint(5);
+            badge.setPoint(5);
+            badge.setType("goal");
         } else {
             log.error("fail");
             return null;
@@ -172,8 +178,8 @@ public class GoalServiceImpl implements GoalService {
 
 
 //    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
-//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
@@ -187,13 +193,14 @@ public class GoalServiceImpl implements GoalService {
                     log.info("set result and get badge");
                     goal.setResult(true); // 목표 달성에 성공한 경우 true
                     int point = badge.endDayPoint(goal); // 설정한 목표 기간에 따른 배지 증정
-                    badge.setBadgePoint(badge.getBadgePoint() + point);
+                    badge.setPoint(badge.getPoint() + point);
                     if (goal.getId() == 1L) { // 처음 생성한 목표를 성공했을 때 주는 기념 배지
                         List<Badge> badgeList = badgeService.getAllBadge();
                         if (!badgeList.contains("Second Badge")) { // 첫 목표 생성 기념 배지가 없을 때만 배지 증정
                             badgeService.addBadge(Badge.builder()
                                     .badgeName("Second Badge")
                                     .badgeDesc("Complete First Goal")
+                                    .type("special")
                                     .build());
                         }
                     }

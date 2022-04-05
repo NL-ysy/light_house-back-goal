@@ -18,7 +18,6 @@ public class Doing {
     @ManyToOne(cascade = CascadeType.REFRESH)
     @JoinColumn(name = "goal_id")
     private Goal goal;
-//    @Column(unique = true)
     private LocalDate checkDate;
     private int week;
     private String postTitle;

@@ -30,4 +30,9 @@ public class BadgeController {
 
     @DeleteMapping("/badge/{id}")
     public void del(@PathVariable("id") Long id) {badgeService.delBadge(id);}
+
+    @GetMapping("/badge/list")
+    public List<Badge> findAllByType(@RequestParam(value = "type", required = false) String type) {
+        return badgeService.findAllByType(type);
+    }
 }
