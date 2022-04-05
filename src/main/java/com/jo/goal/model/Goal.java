@@ -32,7 +32,7 @@ public class Goal{
     private int count;
     private int state = 0;
     private boolean result;
-    @JsonIgnore
+    @JsonIgnore // 응답값에 보이지 않게 숨기기
     @OneToMany(mappedBy = "goal", cascade = CascadeType.REMOVE)
     private List<Doing> doing = new ArrayList<>();
 
@@ -51,5 +51,4 @@ public class Goal{
         this.state = state;
         this.result = result;
     }
-
 }
