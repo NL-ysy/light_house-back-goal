@@ -30,7 +30,8 @@ public class GoalServiceImpl implements GoalService {
         log.info("add goal");
 
         List<Goal> list = goalRepository.findAll();
-        if(list.size() < 1) { // 첫 목표 생성 기념 배지
+        List<Badge> badgeList = badgeService.getAllBadge();
+        if(list.size() < 1 && badgeList.size() < 1) { // 첫 목표 생성 기념 배지
             badgeService.addBadge(Badge.builder()
                     .badgeName("First Badge!!!")
                     .badgeDesc("Set Goal")
