@@ -1,9 +1,6 @@
 package com.jo.goal.service;
 
-import com.jo.goal.model.Badge;
-import com.jo.goal.model.Doing;
-import com.jo.goal.model.Goal;
-import com.jo.goal.model.GoalDto;
+import com.jo.goal.model.*;
 import com.jo.goal.repository.GoalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

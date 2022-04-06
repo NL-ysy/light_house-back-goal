@@ -19,6 +19,7 @@ repositories {
 	mavenCentral()
 }
 
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -28,6 +29,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 //	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	implementation 'org.springframework.cloud:spring-cloud-dependencies:2021.0.0'
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.0'
 }
 
 tasks.named('test') {
