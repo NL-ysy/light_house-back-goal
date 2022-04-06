@@ -1,9 +1,6 @@
 package com.jo.goal.service;
 
-import com.jo.goal.model.Badge;
-import com.jo.goal.model.Doing;
-import com.jo.goal.model.Goal;
-import com.jo.goal.model.GoalDto;
+import com.jo.goal.model.*;
 import com.jo.goal.repository.GoalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +27,8 @@ public class GoalServiceImpl implements GoalService {
         log.info("add goal");
 
         List<Goal> list = goalRepository.findAll();
-        if(list.size() < 1) { // 첫 목표 생성 기념 배지
+        List<Badge> badgeList = badgeService.getAllBadge();
+        if(list.size() < 1 && badgeList.size() < 1) { // 첫 목표 생성 기념 배지
             badgeService.addBadge(Badge.builder()
                     .badgeName("First Badge!!!")
                     .badgeDesc("Set Goal")
