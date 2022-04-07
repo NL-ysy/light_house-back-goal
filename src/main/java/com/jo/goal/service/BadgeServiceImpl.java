@@ -56,4 +56,9 @@ public class BadgeServiceImpl implements BadgeService {
     public List<Badge> findAllByType(String type) {
         return badgeRepository.findAllByType(type);
     }
+
+    @Override
+    public Optional<Badge> findByBadgeName(String badgeName) {
+        return Optional.ofNullable(findByBadgeName(badgeName).get());
+    }
 }

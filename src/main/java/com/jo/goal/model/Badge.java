@@ -19,16 +19,16 @@ public class Badge {
     private Long id;
     private String badgeName;
     private String badgeDesc;
-    private String badgeImg;
+    private String badgeImgUrl;
     private int point = 0;
     private String type;
 
     @Builder
-    public Badge(Long id, String badgeName, String badgeDesc, String badgeImg, int point, String type) {
+    public Badge(Long id, String badgeName, String badgeDesc, String badgeImgUrl, int point, String type) {
         this.id = id;
         this.badgeName = badgeName;
         this.badgeDesc = badgeDesc;
-        this.badgeImg = badgeImg;
+        this.badgeImgUrl = badgeImgUrl;
         this.point = point;
         this.type = type;
     }

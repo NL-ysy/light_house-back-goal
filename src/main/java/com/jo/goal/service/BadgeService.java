@@ -13,4 +13,5 @@ public interface BadgeService {
     Optional<Badge> getBadgeById(Long id);
     void delBadge(Long id);
     List<Badge> findAllByType(String type);
+    Optional<Badge> findByBadgeName(String badgeName);
 }

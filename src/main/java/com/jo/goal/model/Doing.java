@@ -20,17 +20,13 @@ public class Doing {
     private Goal goal;
     private LocalDate checkDate;
     private int week;
-    private String postTitle;
-    private String postContent;
-    private String postImg;
+    private Long postId;
 
-    public Doing(Long id, Goal goal, LocalDate checkDate, int week, String postTitle, String postContent, String postImg) {
+    public Doing(Long id, Goal goal, LocalDate checkDate, int week, Long postId) {
         this.id = id;
         this.goal = goal;
         this.checkDate = checkDate;
         this.week = week;
-        this.postTitle = postTitle;
-        this.postContent = postContent;
-        this.postImg = postImg;
+        this.postId = postId;
     }
 }
