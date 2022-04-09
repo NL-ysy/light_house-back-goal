@@ -2,6 +2,7 @@ package com.jo.goal.service;
 
 import com.jo.goal.model.Doing;
 import com.jo.goal.model.Goal;
+import com.jo.goal.model.Post;
 import com.jo.goal.repository.DoingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

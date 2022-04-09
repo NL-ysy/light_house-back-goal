@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 @EnableJpaAuditing
 @SpringBootApplication
-@EnableFeignClients
 public class GoalApplication {
 
 	public static void main(String[] args) {

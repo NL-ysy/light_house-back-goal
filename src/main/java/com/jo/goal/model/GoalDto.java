@@ -18,5 +18,6 @@ public class GoalDto {
     private int count;
     private int state;
     private boolean result;
+    private Long postId;
 
 }
