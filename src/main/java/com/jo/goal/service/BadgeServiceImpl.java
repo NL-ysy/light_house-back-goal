@@ -1,12 +1,14 @@
 package com.jo.goal.service;
 
 import com.jo.goal.model.Badge;
+import com.jo.goal.model.BadgeList;
+import com.jo.goal.model.Goal;
 import com.jo.goal.repository.BadgeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,35 +19,30 @@ public class BadgeServiceImpl implements BadgeService {
 
     private final BadgeRepository badgeRepository;
 
-    @Transactional
     @Override
     public Badge addBadge(Badge badge) {
         log.info("add badge!");
         return badgeRepository.save(badge);
     }
 
-    @Transactional
     @Override
     public Badge editBadge(Badge badge) {
         log.info("edit badge {}!", badgeRepository.findById(badge.getId()).get());
         return badgeRepository.save(badge);
     }
 
-    @Transactional
     @Override
     public List<Badge> getAllBadge() {
         log.info("get All badge!");
         return badgeRepository.findAll();
     }
 
-    @Transactional
     @Override
     public Optional<Badge> getBadgeById(Long id) {
         log.info("get badge by badge id {}!", id);
         return Optional.ofNullable(badgeRepository.findById(id).get());
     }
 
-    @Transactional
     @Override
     public void delBadge(Long id) {
         log.info("del badge by id {}!", id);
@@ -60,5 +57,25 @@ public class BadgeServiceImpl implements BadgeService {
     @Override
     public Optional<Badge> findByBadgeName(String badgeName) {
         return Optional.ofNullable(findByBadgeName(badgeName).get());
+    }
+
+    @Override
+    public Badge isComplete(Goal goal) {
+        Badge badge = null;
+
+        if(goal.getCount() / goal.getTotalCount() == 1) { // 100% 달성
+            log.info("100");
+            badge = badgeRepository.findByBadgeName("100").get();
+        } else if(goal.getCount() / goal.getTotalCount() >= 0.9) { // 90% 달성
+            log.info("90");
+            badge = badgeRepository.findByBadgeName("90").get();
+        } else if(goal.getCount() / goal.getTotalCount() >= 0.8) { // 80% 달성
+            log.info("80");
+            badge = badgeRepository.findByBadgeName("80").get();
+        } else {
+            log.error("fail");
+        }
+
+        return badge;
     }
 }

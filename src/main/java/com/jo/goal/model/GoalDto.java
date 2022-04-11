@@ -19,5 +19,6 @@ public class GoalDto {
     private int state;
     private boolean result;
     private Long postId;
+    private Long userId;
 
 }

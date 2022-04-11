@@ -35,10 +35,11 @@ public class Goal{
     @JsonIgnore // 응답값에 보이지 않게 숨기기
     @OneToMany(mappedBy = "goal", cascade = CascadeType.REMOVE)
     private List<Doing> doing = new ArrayList<>();
+    private Long userId = 1L;
 
 
     @Builder
-    public Goal(Long id, String goalTitle, String goalDesc, LocalDate startDay, LocalDate endDay, int period, int weekCount, int totalCount, int count, int state, boolean result) {
+    public Goal(Long id, String goalTitle, String goalDesc, LocalDate startDay, LocalDate endDay, int period, int weekCount, int totalCount, int count, int state, boolean result, Long userId) {
         this.id = id;
         this.goalTitle = goalTitle;
         this.goalDesc = goalDesc;
@@ -50,5 +51,6 @@ public class Goal{
         this.count = count;
         this.state = state;
         this.result = result;
+        this.userId = userId;
     }
 }
