@@ -46,16 +46,16 @@ public class BadgeListServiceImpl implements BadgeListService{
     }
 
     @Override
-    public BadgeList addBadgeList(Goal goal) {
+    public BadgeList addBadgeList(Goal goal) { // 목표를 80% 이상 달성한 경우 사용자의 배지리스트에 배지 추가
         log.info("addBadgeList");
         BadgeList badgeList = null;
-        Badge badge = badgeService.isComplete(goal);
+        Badge badge = badgeService.isComplete(goal); // 목표 달성하면 배지 부여
         log.info("badge : {}", badge.getId());
         if(badge != null) {
             badgeList = badgeListRepository.findByBadgeIdAndUserId(badge.getId(), goal.getUserId());
-            if(badgeList == null) {
-                badgeList = new BadgeList(badge, badge.getPoint(), 1, LocalDate.now(), goal.getUserId());
-            } else {
+            if(badgeList == null) { // 배지리스트에 같은 배지가 존재하지 않는 경우
+                badgeList = new BadgeList(badge, badge.getPoint(), 1, LocalDate.now(), badge.getType(), goal.getUserId());
+            } else { // 배지리스트에 동일한 배지가 존재하는 경우 - 포인트, 갯수 증가, 날짜 업데이트
                 badgeList.setPoint(badgeList.getPoint() + badgeList.getPoint());
                 badgeList.setCount(badgeList.getCount() + 1);
                 badgeList.setDate(LocalDate.now());
@@ -64,4 +64,8 @@ public class BadgeListServiceImpl implements BadgeListService{
         return badgeList;
     }
 
+    @Override
+    public List<BadgeList> findAllByTypeAndUserId(String type, Long userId) {
+        return badgeListRepository.findAllByTypeAndUserId(type, userId);
+    }
 }

@@ -13,4 +13,5 @@ public interface BadgeListService {
     void delBadgeList(Long id);
     List<BadgeList> findAllByUserId(Long userId);
     BadgeList addBadgeList(Goal goal);
+    List<BadgeList> findAllByTypeAndUserId(String type, Long userId);
 }

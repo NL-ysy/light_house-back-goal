@@ -16,4 +16,5 @@ public interface BadgeService {
     List<Badge> findAllByType(String type);
     Optional<Badge> findByBadgeName(String badgeName);
     Badge isComplete(Goal goal);
+    Badge createFirstGoal();
 }

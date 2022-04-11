@@ -1,7 +1,6 @@
 package com.jo.goal.controller;
 
 import com.jo.goal.model.Goal;
-import com.jo.goal.model.GoalDto;
 import com.jo.goal.service.GoalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ public class GoalController {
     private final GoalService goalService;
 
     @PostMapping("/goal")
-    public void add(@RequestBody Goal goal) {goalService.addGoal(goal);}
+    public void add(@RequestBody GoalDto goal) {goalService.addGoal(goal);}
 
     @PutMapping("/goal/{id}")
     public void edit(@RequestBody GoalDto goal, @PathVariable Long id) {goalService.editGoal(goal);}

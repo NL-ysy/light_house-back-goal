@@ -21,16 +21,19 @@ public class BadgeList {
     private int point = 0;
     private int count;
     private LocalDate date;
-    private Long userId;
+    private String type;
+    private Long userId = 1L;
 
-    public BadgeList(Badge badge, int point, int count, LocalDate date, Long userId) {
+    public BadgeList(Badge badge, int point, int count, LocalDate date, String type, Long userId) {
         this.badge = badge;
         this.point = point;
         this.count = count;
         this.date = date;
+        this.type = type;
         this.userId = userId;
     }
 
+    // 총 진행 기간에 따른 포인트 부여
     public int endDayPoint(Goal goal) {
         int point = 0;
         if(goal.getPeriod() < 30) {

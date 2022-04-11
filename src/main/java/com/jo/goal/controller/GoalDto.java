@@ -1,4 +1,4 @@
-package com.jo.goal.model;
+package com.jo.goal.controller;
 
 import lombok.Data;
 

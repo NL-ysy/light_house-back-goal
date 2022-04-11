@@ -1,14 +1,12 @@
 package com.jo.goal.service;
 
 import com.jo.goal.model.Badge;
-import com.jo.goal.model.BadgeList;
 import com.jo.goal.model.Goal;
 import com.jo.goal.repository.BadgeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,7 +58,7 @@ public class BadgeServiceImpl implements BadgeService {
     }
 
     @Override
-    public Badge isComplete(Goal goal) {
+    public Badge isComplete(Goal goal) { // 목표를 달성 여부 파악하고 보상되는 배지 리턴
         Badge badge = null;
 
         if(goal.getCount() / goal.getTotalCount() == 1) { // 100% 달성
@@ -77,5 +75,10 @@ public class BadgeServiceImpl implements BadgeService {
         }
 
         return badge;
+    }
+
+    @Override
+    public Badge createFirstGoal() { // 처음 생성한 목표에 대한 기념 배지 증정
+        return badgeRepository.findByBadgeName("Set First Goal").get();
     }
 }
