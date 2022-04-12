@@ -14,5 +14,6 @@ public interface DoingService {
     void delDoing(Long id);
     List<Doing> findAllByGoalId(Long goalId);
     List<Doing> findAllByWeek(int week);
+    List<Doing> findAllByWeekAndGoalId(int week, Long goalId);
     Doing findByGoalIdAndCheckDate(Long goalId, LocalDate localDate);
 }
