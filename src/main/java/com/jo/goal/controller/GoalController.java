@@ -29,10 +29,10 @@ public class GoalController {
     public Optional<Goal> getGoalById(@PathVariable Long id) {return goalService.getGoalById(id);}
 
     @DeleteMapping("/goal/{id}")
-    public void del(@PathVariable("id") Long id) {goalService.delGoal(id);}
+    public void del(@PathVariable("id") Long id, @RequestBody Long userId) {goalService.delGoal(id, userId);}
 
     @GetMapping("/dGoal/{state}")
-    public List<Goal> get3dGoals(@PathVariable int state) {
-        return goalService.get3DoingGoal(state);
+    public List<Goal> get3dGoals(@PathVariable int state, @RequestBody Long userId) {
+        return goalService.get3DoingGoal(state, userId);
     }
 }

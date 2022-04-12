@@ -17,4 +17,5 @@ public interface BadgeService {
     Optional<Badge> findByBadgeName(String badgeName);
     Badge isComplete(Goal goal);
     Badge createFirstGoal();
+    Badge achieveFirstGoal();
 }

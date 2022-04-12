@@ -78,7 +78,12 @@ public class BadgeServiceImpl implements BadgeService {
     }
 
     @Override
-    public Badge createFirstGoal() { // 처음 생성한 목표에 대한 기념 배지 증정
+    public Badge createFirstGoal() { // 처음 생성한 목표에 대한 기념 배지
         return badgeRepository.findByBadgeName("Set First Goal").get();
+    }
+
+    @Override
+    public Badge achieveFirstGoal() { // 처음 달성한 목표에 대한 기념 배지
+        return badgeRepository.findByBadgeName("Achieve a First Goal").get();
     }
 }

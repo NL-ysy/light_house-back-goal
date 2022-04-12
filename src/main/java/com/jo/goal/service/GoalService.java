@@ -11,6 +11,6 @@ public interface GoalService {
     Goal editGoal(GoalDto goalDto);
     List<Goal> getAllGoal();
     Optional<Goal> getGoalById(Long id);
-    void delGoal(Long id);
-    List<Goal> get3DoingGoal(int state);
+    void delGoal(Long id, Long userId);
+    List<Goal> get3DoingGoal(int state, Long userId);
 }
