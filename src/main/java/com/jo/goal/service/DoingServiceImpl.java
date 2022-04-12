@@ -60,6 +60,11 @@ public class DoingServiceImpl implements DoingService{
     }
 
     @Override
+    public List<Doing> findAllByWeekAndGoalId(int week, Long goalId) {
+        return doingRepository.findAllByWeekAndGoalId(week, goalId);
+    }
+
+    @Override
     public Doing findByGoalIdAndCheckDate(Long goalId, LocalDate localDate) {
         return doingRepository.findByGoalIdAndCheckDate(goalId, localDate);
     }

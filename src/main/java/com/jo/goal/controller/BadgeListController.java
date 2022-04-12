@@ -15,6 +15,11 @@ public class BadgeListController {
 
     private final BadgeListService badgeListService;
 
+    @GetMapping("/mybadge")
+    public List<BadgeList> findAll() {
+        return badgeListService.findAll();
+    }
+
     @GetMapping("/mybadge/{userId}")
     public List<BadgeList> findAllByUserId(@PathVariable Long userId) {
         return badgeListService.findAllByUserId(userId);

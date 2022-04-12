@@ -13,7 +13,6 @@ public interface BadgeService {
     List<Badge> getAllBadge();
     Optional<Badge> getBadgeById(Long id);
     void delBadge(Long id);
-    List<Badge> findAllByType(String type);
     Optional<Badge> findByBadgeName(String badgeName);
     Badge isComplete(Goal goal);
     Badge createFirstGoal();
