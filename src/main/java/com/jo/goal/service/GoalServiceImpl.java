@@ -138,8 +138,8 @@ public class GoalServiceImpl implements GoalService {
 
 
 //    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
-//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
@@ -155,13 +155,13 @@ public class GoalServiceImpl implements GoalService {
                     badgeList.setPoint(badgeList.getPoint() + point); // 설정한 목표 기간에 따라 추가 포인트 부여
                     badgeListService.save(badgeList);
 
-                    List<Goal> goalList = goalRepository.findAllByUserId(goal.getUserId());
-                    List<BadgeList> badgeLists = badgeListService.findAllByUserId(goal.getUserId());
-                    if(goal.getId() == goalList.get(0).getId() && !badgeLists.contains("Achieve a First Goal")) { // 사용자가 목표를 처음 달성한 경우 기념 배지 증정
-                        badgeListService.save(
-                                new BadgeList(badgeService.achieveFirstGoal(), 0, 1, LocalDate.now(), "Special", goal.getUserId())
-                        );
-                    }
+//                    List<Goal> goalList = goalRepository.findAllByUserId(goal.getUserId());
+//                    List<BadgeList> badgeLists = badgeListService.findAllByUserId(goal.getUserId());
+//                    if(goal.getId() == goalList.get(0).getId() && !badgeLists.contains("Achieve a First Goal")) { // 사용자가 목표를 처음 달성한 경우 기념 배지 증정
+//                        badgeListService.save(
+//                                new BadgeList(badgeService.achieveFirstGoal(), 0, 1, LocalDate.now(), "Special", goal.getUserId())
+//                        );
+//                    }
                 }
                 goalRepository.save(goal);
             }
