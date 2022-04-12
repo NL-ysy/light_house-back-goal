@@ -31,8 +31,8 @@ public class GoalController {
     @DeleteMapping("/goal/{id}")
     public void del(@PathVariable("id") Long id, @RequestBody Long userId) {goalService.delGoal(id, userId);}
 
-    @GetMapping("/dGoal/{state}")
-    public List<Goal> get3dGoals(@PathVariable int state, @RequestBody Long userId) {
+    @GetMapping("/dGoal/{state}/{userId}")
+    public List<Goal> get3dGoals(@PathVariable int state, @PathVariable Long userId) {
         return goalService.get3DoingGoal(state, userId);
     }
 }
