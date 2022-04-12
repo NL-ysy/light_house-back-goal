@@ -1,4 +1,4 @@
-package com.jo.goal.model;
+package com.jo.goal.controller;
 
 import lombok.Data;
 
@@ -19,5 +19,6 @@ public class GoalDto {
     private int state;
     private boolean result;
     private Long postId;
+    private Long userId;
 
 }
