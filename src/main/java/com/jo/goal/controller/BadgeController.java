@@ -1,6 +1,7 @@
 package com.jo.goal.controller;
 
 import com.jo.goal.model.Badge;
+import com.jo.goal.model.Goal;
 import com.jo.goal.service.BadgeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,10 @@ public class BadgeController {
 
     @DeleteMapping("/badge/{id}")
     public void del(@PathVariable("id") Long id) {badgeService.delBadge(id);}
+
+    @GetMapping("/badge/find")
+    public Badge findByBadgeName(@RequestParam(name = "badgeName", required = false) String badgeName) {
+        return badgeService.findByBadgeName(badgeName).get();
+    }
 
 }

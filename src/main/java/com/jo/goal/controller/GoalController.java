@@ -17,7 +17,9 @@ public class GoalController {
     private final GoalService goalService;
 
     @PostMapping("/goal")
-    public void add(@RequestBody GoalDto goal) {goalService.addGoal(goal);}
+    public void add(@RequestBody GoalDto goal) {
+        goalService.addGoal(goal);
+    }
 
     @PutMapping("/goal/{id}")
     public void edit(@RequestBody GoalDto goal, @PathVariable Long id) {goalService.editGoal(goal);}

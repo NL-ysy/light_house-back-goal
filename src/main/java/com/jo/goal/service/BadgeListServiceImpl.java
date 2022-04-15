@@ -49,6 +49,7 @@ public class BadgeListServiceImpl implements BadgeListService{
     public BadgeList addBadgeList(Goal goal) { // 목표를 80% 이상 달성한 경우 사용자의 배지리스트에 배지 추가
         log.info("addBadgeList");
         BadgeList badgeList = null;
+
         Badge badge = badgeService.isComplete(goal); // 목표 달성하면 배지 부여
         log.info("badge : {}", badge.getId());
         if(badge != null) {
