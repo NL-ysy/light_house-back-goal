@@ -31,6 +31,11 @@ public class DoingController {
     @GetMapping("/doing/{id}")
     public Optional<Doing> getDoingById(@PathVariable Long id) {return doingService.getDoingById(id);}
 
+    @GetMapping("/doing/{id}/{week}")
+    public List<Doing> findAllByWeekAndGoalId(@PathVariable("week") int week, @PathVariable("id") Long id) {
+        return doingService.findAllByWeekAndGoalId(week, id);
+    }
+
     @DeleteMapping("/doing/{id}")
     public void del(@PathVariable("id") Long id) {doingService.delDoing(id);}
 

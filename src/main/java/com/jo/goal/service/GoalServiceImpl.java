@@ -80,13 +80,9 @@ public class GoalServiceImpl implements GoalService {
                 log.info("22222");
                 if(doingService.findByGoalIdAndCheckDate(goal.getId(), LocalDate.now()) == null) { // 하루에 1번만 목표 실천 인증 가능
                     log.info("checkDoing");
-<<<<<<< HEAD
                     goal.setCount(goal.getCount() + 1); // 두잉이 등록 되는 조건이 맞을 때 카운트 + 1
 //                    goal.setCount(goal.getCount() + goalDto.getCount()); // postman test
-=======
-//                    goal.setCount(goalDto.getCount()); // test용
-                    goal.setCount(goal.getCount() + 1);
->>>>>>> 2cc8be7fd3bd15a2101147350eff0a13d311aeb5
+
                     doingService.addDoing(Doing.builder()
                             .goal(goal)
                             .checkDate(LocalDate.now())

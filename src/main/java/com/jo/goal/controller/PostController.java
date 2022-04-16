@@ -31,7 +31,6 @@ public class PostController {
 //        return post;
 //    }
 
-
     //가상의 외부 API
     @GetMapping("/posts/{id}")
     public Post getPostId(@PathVariable("id") long id) {
@@ -39,7 +38,7 @@ public class PostController {
         Post post = new Post();
         post.setContent("내용");
         post.setId(3L);
-        post.setCategoryId(1L);
+        post.setCategoryId("테스트");
         post.setTitle("제목");
         return post;
     }
