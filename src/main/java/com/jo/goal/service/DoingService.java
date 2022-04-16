@@ -16,4 +16,5 @@ public interface DoingService {
     List<Doing> findAllByWeek(int week);
     List<Doing> findAllByWeekAndGoalId(int week, Long goalId);
     Doing findByGoalIdAndCheckDate(Long goalId, LocalDate localDate);
+    Long countByWeekAndGoalId(int week, Long goalId);
 }

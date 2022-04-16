@@ -19,6 +19,11 @@ public class GoalController {
     @PostMapping("/goal")
     public void add(@RequestBody GoalDto goal) {
         goalService.addGoal(goal);
+//        if(goalService.addGoal(goal)) {
+//            return null;
+//        } else {
+//            return "목표는 최대 3개까지 설정 가능합니다.";
+//        }
     }
 
     @PutMapping("/goal/{id}")
