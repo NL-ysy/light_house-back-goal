@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class Post {
     private Long id;
-    private Long categoryId;
+    private String categoryId;
     private String title;
     private String content;
     private String postImg;

@@ -11,6 +11,7 @@ public interface BadgeListService {
     List<BadgeList> findAll();
     Optional<BadgeList> findById(Long id);
     void delBadgeList(Long id);
+    List<BadgeList> findAllByUserId(Long userId);
     List<BadgeList> findByUserIdOrderByIdDesc(Long userId);
     List<BadgeList> findAllByTypeAndUserId(String type, Long userId);
     BadgeList findByBadgeIdAndUserId(Long badgeId, Long userId);

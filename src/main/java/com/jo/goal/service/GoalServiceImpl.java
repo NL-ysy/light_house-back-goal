@@ -87,8 +87,10 @@ public class GoalServiceImpl implements GoalService {
             if((doingService.findAllByWeekAndGoalId(thisWeek, goal.getId()).size() < goal.getWeekCount())) { // 일주일 동안 실천하기로 한 횟수만큼 count
                 if(doingService.findByGoalIdAndCheckDate(goal.getId(), LocalDate.now()) == null) { // 하루에 1번만 목표 실천 인증 가능
                     log.info("checkDoing");
+
 //                    goal.setCount(goalDto.getCount()); // test용
                     goal.setCount(goal.getCount() + 1);
+
                     doingService.addDoing(Doing.builder()
                             .goal(goal)
                             .checkDate(LocalDate.now())
