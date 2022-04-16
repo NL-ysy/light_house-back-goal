@@ -61,6 +61,7 @@ public class DoingServiceImpl implements DoingService{
 
     @Override
     public List<Doing> findAllByWeekAndGoalId(int week, Long goalId) {
+        log.info("find All By Week {week} and GaolId {goalId}", week, goalId);
         return doingRepository.findAllByWeekAndGoalId(week, goalId);
     }
 
