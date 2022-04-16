@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface GoalService {
-    Goal addGoal(GoalDto goalDto);
+    void addGoal(GoalDto goalDto);
     Goal editGoal(GoalDto goalDto);
     List<Goal> getAllGoal();
     Optional<Goal> getGoalById(Long id);

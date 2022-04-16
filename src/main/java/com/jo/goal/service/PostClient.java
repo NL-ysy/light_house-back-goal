@@ -8,10 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
+import java.util.List;
 
-@FeignClient(name = "feignClient", url = "http://localhost:8081")
+@FeignClient(name = "PostClient", url = "http://localhost:8081")
+//@FeignClient(name = "feignClient", url = "http://localhost:8081")
 public interface PostClient {
     @GetMapping("/api/post/{id}")
     Post findById(@PathVariable("id") Long id);
+
+    @GetMapping("/api/post/auth/{goalId}")
+    List<Post> findAllByGoalId(@PathVariable("goalId") Long goalId);
 
 }
