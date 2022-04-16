@@ -27,7 +27,6 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public Goal addGoal(GoalDto goalDto) {
         log.info("add goal");
-
         List<BadgeList> badgeLists = badgeListService.findAllByUserId(goalDto.getUserId());
         List<Goal> goalList = goalRepository.findAllByUserId(goalDto.getUserId());
 
@@ -81,8 +80,13 @@ public class GoalServiceImpl implements GoalService {
                 log.info("22222");
                 if(doingService.findByGoalIdAndCheckDate(goal.getId(), LocalDate.now()) == null) { // 하루에 1번만 목표 실천 인증 가능
                     log.info("checkDoing");
+<<<<<<< HEAD
                     goal.setCount(goal.getCount() + 1); // 두잉이 등록 되는 조건이 맞을 때 카운트 + 1
 //                    goal.setCount(goal.getCount() + goalDto.getCount()); // postman test
+=======
+//                    goal.setCount(goalDto.getCount()); // test용
+                    goal.setCount(goal.getCount() + 1);
+>>>>>>> 2cc8be7fd3bd15a2101147350eff0a13d311aeb5
                     doingService.addDoing(Doing.builder()
                             .goal(goal)
                             .checkDate(LocalDate.now())
@@ -102,9 +106,14 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public Goal editGoal(GoalDto goalDto) {
         log.info("edit goal. {}", goalRepository.findById(goalDto.getId()).get());
+        Goal goal = null;
+        try{
+            goal = checkDoing(goalDto);
+        } catch (Exception e) {
+            log.error("edit goal error : {}", e.getMessage());
+        }
 
-        Goal goal = checkDoing(goalDto);
-
+//        Goal goal = checkDoing(goalDto);
         return goalRepository.save(goal);
     }
 
@@ -138,10 +147,14 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.findTop3ByStateAndUserIdOrderByIdDesc(state, userId);
     }
 
+    @Override
+    public List<Goal> findAllByUserId(Long goalId) {
+        return goalRepository.findAllByUserId(goalId);
+    }
 
 //    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
-    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
+    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();

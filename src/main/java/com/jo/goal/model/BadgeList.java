@@ -22,7 +22,7 @@ public class BadgeList {
     private int count;
     private LocalDate date;
     private String type;
-    private Long userId = 1L;
+    private Long userId;
 
     public BadgeList(Badge badge, int point, int count, LocalDate date, String type, Long userId) {
         this.badge = badge;
