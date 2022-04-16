@@ -68,4 +68,9 @@ public class DoingServiceImpl implements DoingService{
     public Doing findByGoalIdAndCheckDate(Long goalId, LocalDate localDate) {
         return doingRepository.findByGoalIdAndCheckDate(goalId, localDate);
     }
+
+    @Override
+    public Long countByWeekAndGoalId(int week, Long goalId) {
+        return doingRepository.countByWeekAndGoalId(week, goalId);
+    }
 }

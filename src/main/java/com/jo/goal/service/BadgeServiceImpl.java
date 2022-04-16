@@ -55,14 +55,19 @@ public class BadgeServiceImpl implements BadgeService {
     @Override
     public Badge isComplete(Goal goal) { // 목표를 달성 여부 파악하고 보상되는 배지 리턴
         Badge badge = null;
+        log.info("goal id : {}", goal.getId());
+        log.info("goal totalCount : {}", goal.getTotalCount());
+        log.info("goal count : {}", goal.getCount());
+        double result = (goal.getCount() * 1.0) / (goal.getTotalCount() * 1.0);
+        log.info("badge : {}", result);
 
-        if(goal.getCount() / goal.getTotalCount() == 1) { // 100% 달성
+        if(result * 100 == 100) { // 100% 달성
             log.info("100");
             badge = badgeRepository.findByBadgeName("100").get();
-        } else if(goal.getCount() / goal.getTotalCount() >= 0.9) { // 90% 달성
+        } else if(result * 100 >= 90) { // 90% 달성
             log.info("90");
             badge = badgeRepository.findByBadgeName("90").get();
-        } else if(goal.getCount() / goal.getTotalCount() >= 0.8) { // 80% 달성
+        } else if(result * 100 >= 80) { // 80% 달성
             log.info("80");
             badge = badgeRepository.findByBadgeName("80").get();
         } else {

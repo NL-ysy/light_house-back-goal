@@ -25,10 +25,10 @@ public class GoalServiceImpl implements GoalService {
 
     @Transactional
     @Override
-    public Goal addGoal(GoalDto goalDto) {
+    public void addGoal(GoalDto goalDto) {
         log.info("add goal");
         List<BadgeList> badgeLists = badgeListService.findAllByUserId(goalDto.getUserId());
-        List<Goal> goalList = goalRepository.findAllByUserId(goalDto.getUserId());
+        List<Goal> goalList = goalRepository.findAllByUserId(1L);
 
         if(badgeLists.size() < 1 && goalList.size() < 1) { // 사용자가 처음 목표를 생성했을 때 기념 배지 증정
             BadgeList badgeList = new BadgeList(badgeService.createFirstGoal(), 0, 1, LocalDate.now(), "Special", goalDto.getUserId());
@@ -37,7 +37,7 @@ public class GoalServiceImpl implements GoalService {
             }
         }
 
-        return goalRepository.save(
+        goalRepository.save(
                 new Goal(
                         goalDto.getGoalTitle(),
                         goalDto.getGoalDesc(),
@@ -50,6 +50,28 @@ public class GoalServiceImpl implements GoalService {
                         goalDto.getUserId()
                 )
         );
+
+//        log.info("user id : {}", goalDto.getUserId());
+//        log.info("goal list size : {}", goalList.size());
+//        if(goalList.size() < 3) { // 목표 최대 3개까지 설정
+//            goalRepository.save(
+//                    new Goal(
+//                            goalDto.getGoalTitle(),
+//                            goalDto.getGoalDesc(),
+//                            goalDto.getStartDay(),
+//                            goalDto.getEndDay(),
+//                            goalDto.getPeriod(),
+//                            goalDto.getWeekCount(),
+//                            goalDto.getTotalCount(),
+//                            goalDto.getCount(), // test용 count 갯수 조절 가능
+//                            goalDto.getUserId()
+//                    )
+//            );
+//            return true;
+//        } else {
+//            return false;
+//        }
+
     }
 
     public int checkWeek(Goal goal) { // 총 실행 기간 중 현재 몇 주차인지 확인
@@ -145,9 +167,9 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.findAllByUserId(goalId);
     }
 
-//    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
+    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
 //    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
@@ -156,12 +178,20 @@ public class GoalServiceImpl implements GoalService {
             if(goal.getEndDay().isBefore(today) && goal.getState() == 0) {
                 goal.setState(1); //endDay 확인하고 state 변경(종료되면 1)
 
-                BadgeList badgeList = badgeListService.addBadgeList(goal);
-                if(badgeList != null) { // 목표 달성에 성공한 경우 배지리스트에 배지 추가
+                Badge badge = badgeService.isComplete(goal); // 목표를 80% 이상 달성한 경우 사용자의 배지리스트에 배지 추가
+
+                if(badge != null) {
                     goal.setResult(true); // 성공하면 result true로 변경
-                    int point = badgeList.endDayPoint(goal);
-                    badgeList.setPoint(badgeList.getPoint() + point); // 설정한 목표 기간에 따라 추가 포인트 부여
-                    badgeListService.save(badgeList);
+                    BadgeList badgeList = badgeListService.findByBadgeIdAndUserId(badge.getId(), goal.getUserId());
+                    if(badgeList == null) { // 배지리스트에 같은 배지가 존재하지 않는 경우
+                        badgeList = new BadgeList(badge, badge.getPoint(), 1, LocalDate.now(), badge.getType(), goal.getUserId());
+                        badgeListService.save(badgeList);
+                    } else { // 배지리스트에 동일한 배지가 존재하는 경우 - 포인트, 갯수 증가, 날짜 업데이트
+                        badgeList.setPoint(badgeList.getPoint() + badgeList.getPoint());
+                        badgeList.setCount(badgeList.getCount() + 1);
+                        badgeList.setDate(LocalDate.now());
+                        badgeListService.save(badgeList);
+                    }
 
 //                    List<Goal> goalList = goalRepository.findAllByUserId(goal.getUserId());
 //                    List<BadgeList> badgeLists = badgeListService.findAllByUserId(goal.getUserId());
@@ -170,7 +200,10 @@ public class GoalServiceImpl implements GoalService {
 //                                new BadgeList(badgeService.achieveFirstGoal(), 0, 1, LocalDate.now(), "Special", goal.getUserId())
 //                        );
 //                    }
+                } else {
+                    log.info("goal fail");
                 }
+
                 goalRepository.save(goal);
             }
         });
