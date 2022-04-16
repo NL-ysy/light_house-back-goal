@@ -17,13 +17,12 @@ public class GoalController {
     private final GoalService goalService;
 
     @PostMapping("/goal")
-    public void add(@RequestBody GoalDto goal) {
-        goalService.addGoal(goal);
-//        if(goalService.addGoal(goal)) {
-//            return null;
-//        } else {
-//            return "목표는 최대 3개까지 설정 가능합니다.";
-//        }
+    public String add(@RequestBody GoalDto goal) {
+        if(goalService.addGoal(goal)) {
+            return null;
+        } else {
+            return "목표는 최대 3개까지 설정 가능합니다.";
+        }
     }
 
     @PutMapping("/goal/{id}")
@@ -41,5 +40,10 @@ public class GoalController {
     @GetMapping("/dGoal/{state}/{userId}")
     public List<Goal> get3dGoals(@PathVariable int state, @PathVariable Long userId) {
         return goalService.get3DoingGoal(state, userId);
+    }
+
+    @GetMapping("/goal/result/{state}/{result}/{userId}")
+    public Long countByStateAndResultAndUserId(@PathVariable int state, @RequestParam("result") boolean result, @PathVariable Long userId) {
+        return goalService.countByStateAndResultAndUserId(state, result, userId);
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface BadgeListRepository extends JpaRepository<BadgeList, Long> {
-    List<BadgeList> findAllByUserId(Long userId);
+    List<BadgeList> findByUserIdOrderByIdDesc(Long userId);
     BadgeList findByBadgeIdAndUserId(Long badgeId, Long userId);
     List<BadgeList> findAllByTypeAndUserId(String type, Long userId);
 }
