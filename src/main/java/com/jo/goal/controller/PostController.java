@@ -31,6 +31,7 @@ public class PostController {
 //        return post;
 //    }
 
+
     //가상의 외부 API
     @GetMapping("/posts/{id}")
     public Post getPostId(@PathVariable("id") long id) {
