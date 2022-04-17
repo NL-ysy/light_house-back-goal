@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,7 +29,7 @@ public class GoalServiceImpl implements GoalService {
     public boolean addGoal(GoalDto goalDto) {
         log.info("add goal");
         List<BadgeList> badgeLists = badgeListService.findAllByUserId(goalDto.getUserId());
-        List<Goal> goalList = goalRepository.findAllByUserId(1L);
+        List<Goal> goalList = goalRepository.findAllByUserId(goalDto.getUserId());
 
         if(badgeLists.size() < 1 && goalList.size() < 1) { // 사용자가 처음 목표를 생성했을 때 기념 배지 증정
             BadgeList badgeList = new BadgeList(badgeService.createFirstGoal(), 0, 1, LocalDate.now(), "Special", goalDto.getUserId());
@@ -39,9 +38,8 @@ public class GoalServiceImpl implements GoalService {
             }
         }
 
-        log.info("user id : {}", goalDto.getUserId());
-        log.info("goal list size : {}", goalList.size());
-        if(goalList.size() < 3) { // 목표 최대 3개까지 설정
+        // 3개까지 진행 중인 목표 설정 가능
+        if(goalRepository.findAllByStateAndUserId(goalDto.getState(), goalDto.getUserId()).size() < 3) {
             goalRepository.save(
                     new Goal(
                             goalDto.getGoalTitle(),
@@ -59,6 +57,27 @@ public class GoalServiceImpl implements GoalService {
         } else {
             return false;
         }
+
+//        log.info("user id : {}", goalDto.getUserId());
+//        log.info("goal list size : {}", goalList.size());
+//        if(goalList.size() < 3) { // 목표 최대 3개까지 설정
+//            goalRepository.save(
+//                    new Goal(
+//                            goalDto.getGoalTitle(),
+//                            goalDto.getGoalDesc(),
+//                            goalDto.getStartDay(),
+//                            goalDto.getEndDay(),
+//                            goalDto.getPeriod(),
+//                            goalDto.getWeekCount(),
+//                            goalDto.getTotalCount(),
+//                            goalDto.getCount(), // test용 count 갯수 조절 가능
+//                            goalDto.getUserId()
+//                    )
+//            );
+//            return true;
+//        } else {
+//            return false;
+//        }
     }
 
     public int checkWeek(Goal goal) { // 총 실행 기간 중 현재 몇 주차인지 확인
@@ -151,11 +170,6 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.findTop3ByStateAndUserIdOrderByIdDesc(state, userId);
     }
 
-    public List<Goal> sortOrderByDesc() {
-        Sort sort = Sort.by(Sort.Direction.DESC, "id");
-        return goalRepository.findAll(sort);
-    }
-
     @Override
     public Long countByStateAndResultAndUserId(int state, boolean result, Long userId) {
         return goalRepository.countByStateAndResultAndUserId(state, result, userId);
@@ -167,8 +181,8 @@ public class GoalServiceImpl implements GoalService {
     }
 
 //    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
-    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+//    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
+    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();
