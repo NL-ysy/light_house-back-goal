@@ -5,6 +5,7 @@ import com.jo.goal.model.*;
 import com.jo.goal.repository.GoalRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -25,10 +26,10 @@ public class GoalServiceImpl implements GoalService {
 
     @Transactional
     @Override
-    public void addGoal(GoalDto goalDto) {
+    public boolean addGoal(GoalDto goalDto) {
         log.info("add goal");
         List<BadgeList> badgeLists = badgeListService.findAllByUserId(goalDto.getUserId());
-        List<Goal> goalList = goalRepository.findAllByUserId(1L);
+        List<Goal> goalList = goalRepository.findAllByUserId(goalDto.getUserId());
 
         if(badgeLists.size() < 1 && goalList.size() < 1) { // 사용자가 처음 목표를 생성했을 때 기념 배지 증정
             BadgeList badgeList = new BadgeList(badgeService.createFirstGoal(), 0, 1, LocalDate.now(), "Special", goalDto.getUserId());
@@ -37,19 +38,25 @@ public class GoalServiceImpl implements GoalService {
             }
         }
 
-        goalRepository.save(
-                new Goal(
-                        goalDto.getGoalTitle(),
-                        goalDto.getGoalDesc(),
-                        goalDto.getStartDay(),
-                        goalDto.getEndDay(),
-                        goalDto.getPeriod(),
-                        goalDto.getWeekCount(),
-                        goalDto.getTotalCount(),
-                        goalDto.getCount(), // test용 count 갯수 조절 가능
-                        goalDto.getUserId()
-                )
-        );
+        // 3개까지 진행 중인 목표 설정 가능
+        if(goalRepository.findAllByStateAndUserId(goalDto.getState(), goalDto.getUserId()).size() < 3) {
+            goalRepository.save(
+                    new Goal(
+                            goalDto.getGoalTitle(),
+                            goalDto.getGoalDesc(),
+                            goalDto.getStartDay(),
+                            goalDto.getEndDay(),
+                            goalDto.getPeriod(),
+                            goalDto.getWeekCount(),
+                            goalDto.getTotalCount(),
+                            goalDto.getCount(), // test용 count 갯수 조절 가능
+                            goalDto.getUserId()
+                    )
+            );
+            return true;
+        } else {
+            return false;
+        }
 
 //        log.info("user id : {}", goalDto.getUserId());
 //        log.info("goal list size : {}", goalList.size());
@@ -71,7 +78,6 @@ public class GoalServiceImpl implements GoalService {
 //        } else {
 //            return false;
 //        }
-
     }
 
     public int checkWeek(Goal goal) { // 총 실행 기간 중 현재 몇 주차인지 확인
@@ -97,13 +103,12 @@ public class GoalServiceImpl implements GoalService {
         int thisWeek = checkWeek(goal);
 
         if(goal.getState() == 0 && goal.getCount() < goal.getTotalCount()) {
-            log.info("111111");
             if((doingService.findAllByWeekAndGoalId(thisWeek, goal.getId()).size() < goal.getWeekCount())) { // 일주일 동안 실천하기로 한 횟수만큼 count
-                log.info("22222");
                 if(doingService.findByGoalIdAndCheckDate(goal.getId(), LocalDate.now()) == null) { // 하루에 1번만 목표 실천 인증 가능
                     log.info("checkDoing");
-                    goal.setCount(goal.getCount() + 1); // 두잉이 등록 되는 조건이 맞을 때 카운트 + 1
-//                    goal.setCount(goal.getCount() + goalDto.getCount()); // postman test
+
+//                    goal.setCount(goalDto.getCount()); // test용
+                    goal.setCount(goal.getCount() + 1);
 
                     doingService.addDoing(Doing.builder()
                             .goal(goal)
@@ -162,7 +167,12 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public List<Goal> get3DoingGoal(int state, Long userId) {
         log.info("대시보드에 보여줄 최근 진행중인 목표 3개");
-        return goalRepository.findTop3ByStateAndUserIdOrderByIdDesc(state, userId);
+        return goalRepository.findByStateAndUserIdOrderByIdDesc(state, userId);
+    }
+
+    @Override
+    public Long countByStateAndResultAndUserId(int state, boolean result, Long userId) {
+        return goalRepository.countByStateAndResultAndUserId(state, result, userId);
     }
 
     @Override

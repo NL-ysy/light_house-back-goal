@@ -45,6 +45,11 @@ public class BadgeListServiceImpl implements BadgeListService{
     }
 
     @Override
+    public List<BadgeList> findByUserIdOrderByIdDesc(Long userId) {
+        return badgeListRepository.findByUserIdOrderByIdDesc(userId);
+    }
+
+    @Override
     public BadgeList findByBadgeIdAndUserId(Long badgeId, Long userId) {
         return badgeListRepository.findByBadgeIdAndUserId(badgeId, userId);
     }

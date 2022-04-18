@@ -22,7 +22,7 @@ public class BadgeListController {
 
     @GetMapping("/mybadge/{userId}")
     public List<BadgeList> findAllByUserId(@PathVariable Long userId) {
-        return badgeListService.findAllByUserId(userId);
+        return badgeListService.findByUserIdOrderByIdDesc(userId);
     }
 
     @GetMapping("/mybadge/list/{userId}")
