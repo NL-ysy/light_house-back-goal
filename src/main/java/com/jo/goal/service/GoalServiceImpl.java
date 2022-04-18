@@ -167,7 +167,7 @@ public class GoalServiceImpl implements GoalService {
     @Override
     public List<Goal> get3DoingGoal(int state, Long userId) {
         log.info("대시보드에 보여줄 최근 진행중인 목표 3개");
-        return goalRepository.findTop3ByStateAndUserIdOrderByIdDesc(state, userId);
+        return goalRepository.findByStateAndUserIdOrderByIdDesc(state, userId);
     }
 
     @Override
@@ -180,9 +180,9 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.findAllByUserId(goalId);
     }
 
-//    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
+    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
 //    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
-    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
+//    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
         List<Goal> list = goalRepository.findAll();
         LocalDate today = LocalDate.now();

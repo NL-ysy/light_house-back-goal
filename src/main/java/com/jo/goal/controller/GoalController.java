@@ -43,7 +43,7 @@ public class GoalController {
     }
 
     @GetMapping("/goal/result/{state}/{result}/{userId}")
-    public Long countByStateAndResultAndUserId(@PathVariable int state, @RequestParam("result") boolean result, @PathVariable Long userId) {
+    public Long countByStateAndResultAndUserId(@PathVariable int state, @PathVariable boolean result, @PathVariable Long userId) {
         return goalService.countByStateAndResultAndUserId(state, result, userId);
     }
 }
