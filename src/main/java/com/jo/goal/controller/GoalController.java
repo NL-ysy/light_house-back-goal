@@ -46,4 +46,9 @@ public class GoalController {
     public Long countByStateAndResultAndUserId(@PathVariable int state, @PathVariable boolean result, @PathVariable Long userId) {
         return goalService.countByStateAndResultAndUserId(state, result, userId);
     }
+
+    @GetMapping("/goal/{state}/{userId}/search")
+    public List<Goal> searchGoal(@PathVariable int state, @PathVariable Long userId, @RequestParam(value = "keyword") String keyword) {
+        return goalService.findByStateAndUserIdAndGoalTitleContaining(state, userId, keyword);
+    }
 }
