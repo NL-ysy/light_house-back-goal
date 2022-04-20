@@ -180,6 +180,12 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.findAllByUserId(goalId);
     }
 
+    @Override
+    public List<Goal> findByStateAndUserIdAndGoalTitleContaining(int state, Long userId, String keyword) {
+        // 목표 title로 검색
+        return goalRepository.findByStateAndUserIdAndGoalTitleContaining(state, userId, keyword);
+    }
+
     @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
 //    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
 //    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행

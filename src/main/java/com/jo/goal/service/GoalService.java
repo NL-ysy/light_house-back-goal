@@ -16,4 +16,5 @@ public interface GoalService {
     List<Goal> get3DoingGoal(int state, Long userId);
     List<Goal> findAllByUserId(Long goalId);
     Long countByStateAndResultAndUserId(int state, boolean result, Long userId);
+    List<Goal> findByStateAndUserIdAndGoalTitleContaining(int state, Long userId, String keyword);
 }
