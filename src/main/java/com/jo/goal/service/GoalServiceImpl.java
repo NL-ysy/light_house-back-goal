@@ -186,7 +186,7 @@ public class GoalServiceImpl implements GoalService {
         return goalRepository.findByStateAndUserIdAndGoalTitleContaining(state, userId, keyword);
     }
 
-    @Scheduled(fixedDelay = 1000 * 30) // 30초에 한 번씩 실행
+    @Scheduled(fixedDelay = 1000 * 60 * 3) // 3분에 한 번씩 실행
 //    @Scheduled(cron = "30 * * * * *") // 매분 30초마다 실행
 //    @Scheduled(cron = "0 0 0 * * *") // 매일 0시에 실행
     public void scheduler() { // 목표 종료일에 state 변경
